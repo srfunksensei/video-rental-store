@@ -20,7 +20,6 @@ public abstract class AbstractEntity {
 	
 	@Id
 	@GeneratedValue
-	@Column(updatable = false, nullable = false)
 	private Long id;
 
 	@Column(updatable = false, nullable = false)
