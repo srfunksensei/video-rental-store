@@ -1,15 +1,13 @@
 package com.mb.controller;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,12 +42,8 @@ public class FilmInventoryController {
 	}
 
 	@GetMapping
-	public Resources<Resource<Film>> findAll(Pageable pageable) {
-		final List<Resource<Film>> films = filmRepository.findAll(pageable).stream() //
-				.map(filmResourceAssembler::toResource) //
-				.collect(Collectors.toList());
-
-		return new Resources<>(films, //
-				linkTo(methodOn(FilmInventoryController.class).findAll(pageable)).withSelfRel());
+	public HttpEntity<PagedResources<Resource<Film>>> findAll(Pageable pageable, PagedResourcesAssembler<Film> pagedAssembler) {
+		final Page<Film> films = filmRepository.findAll(pageable);
+		return new ResponseEntity<>(pagedAssembler. toResource(films, filmResourceAssembler), HttpStatus.OK);
 	}
 }
