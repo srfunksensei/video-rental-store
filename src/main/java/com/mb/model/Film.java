@@ -2,13 +2,20 @@ package com.mb.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mb.model.bonusPoint.BonusPoint;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,11 +46,17 @@ public class Film extends AbstractEntity {
 	@Enumerated(EnumType.STRING)
 	private FilmType type;
 	
-	public Film(Long id, LocalDate createdDate, LocalDate updatedDate, String title, int year, FilmType type) {
-		super(id, createdDate, updatedDate);
+	@JsonIgnore
+	@JoinColumn(name = "BONUS_POINT_ID")
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	private BonusPoint bonus;
+	
+	public Film(LocalDate createdDate, LocalDate updatedDate, String title, int year, FilmType type, BonusPoint bonus) {
+		super(createdDate, updatedDate);
 		this.title = title;
 		this.year = year;
 		this.type = type;
+		this.bonus = bonus;
 	}
 
 }

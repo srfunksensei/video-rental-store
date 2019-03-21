@@ -10,7 +10,6 @@ import javax.persistence.MappedSuperclass;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +18,6 @@ import lombok.Setter;
 @Setter
 @MappedSuperclass
 @NoArgsConstructor
-@AllArgsConstructor
 public abstract class AbstractEntity {
 	
 	@Id
@@ -34,4 +32,8 @@ public abstract class AbstractEntity {
 	@LastModifiedDate
 	private LocalDate updatedDate;
 
+	protected AbstractEntity(LocalDate createdDate, LocalDate updatedDate) {
+		this.createdDate = createdDate;
+		this.updatedDate = updatedDate;
+	}
 }
