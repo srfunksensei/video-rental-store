@@ -1,7 +1,5 @@
 package com.mb.assembler.resource;
 
-import java.math.BigDecimal;
-
 import org.springframework.hateoas.ResourceSupport;
 
 import com.mb.model.FilmType;
@@ -17,6 +15,4 @@ public class FilmResource extends ResourceSupport {
 	private String title;
 	private int year;
 	private FilmType type;
-	private BigDecimal price;
-	private String currency;
 }
