@@ -1,4 +1,4 @@
-package com.mb.model;
+package com.mb.model.film;
 
 public enum FilmType {
 	NEW, OLD, REGULAR

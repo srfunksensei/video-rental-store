@@ -6,7 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.mb.model.Film;
+import com.mb.model.film.Film;
 
 @Repository("filmRepository")
 public interface FilmRepository extends JpaRepository<Film, Long> {

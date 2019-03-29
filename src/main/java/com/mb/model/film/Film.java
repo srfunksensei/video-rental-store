@@ -1,4 +1,4 @@
-package com.mb.model;
+package com.mb.model.film;
 
 import java.time.LocalDate;
 
@@ -14,7 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mb.model.AbstractEntity;
 import com.mb.model.bonusPoint.BonusPoint;
 
 import lombok.Getter;
@@ -46,7 +46,6 @@ public class Film extends AbstractEntity {
 	@Enumerated(EnumType.STRING)
 	private FilmType type;
 	
-	@JsonIgnore
 	@JoinColumn(name = "BONUS_POINT_ID")
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	private BonusPoint bonus;

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.mb.assembler.resource.FilmResource;
 import com.mb.controller.FilmInventoryController;
-import com.mb.model.Film;
+import com.mb.model.film.Film;
 
 @Component
 public class FilmResourceAssemblerSupport extends ResourceAssemblerSupport<Film, FilmResource> {

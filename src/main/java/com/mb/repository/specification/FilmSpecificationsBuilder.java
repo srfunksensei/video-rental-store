@@ -8,8 +8,8 @@ import java.util.Set;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.mb.model.Film;
-import com.mb.model.FilmType;
+import com.mb.model.film.Film;
+import com.mb.model.film.FilmType;
 
 public class FilmSpecificationsBuilder {
 

@@ -7,8 +7,8 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.mb.model.Film;
-import com.mb.model.FilmType;
+import com.mb.model.film.Film;
+import com.mb.model.film.FilmType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.mb.assembler.FilmResourceAssemblerSupport;
 import com.mb.assembler.resource.FilmResource;
-import com.mb.model.Film;
-import com.mb.model.FilmType;
+import com.mb.model.film.Film;
+import com.mb.model.film.FilmType;
 import com.mb.repository.FilmRepository;
 import com.mb.repository.specification.FilmSpecificationsBuilder;
 

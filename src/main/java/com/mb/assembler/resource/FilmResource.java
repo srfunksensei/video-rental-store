@@ -2,7 +2,7 @@ package com.mb.assembler.resource;
 
 import org.springframework.hateoas.ResourceSupport;
 
-import com.mb.model.FilmType;
+import com.mb.model.film.FilmType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

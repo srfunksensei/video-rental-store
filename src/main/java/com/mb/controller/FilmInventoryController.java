@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mb.assembler.resource.FilmResource;
-import com.mb.model.FilmType;
+import com.mb.model.film.FilmType;
 import com.mb.service.FilmService;
 
 @RestController

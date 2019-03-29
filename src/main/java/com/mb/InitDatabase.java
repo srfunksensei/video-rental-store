@@ -14,11 +14,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import com.mb.model.Film;
-import com.mb.model.FilmType;
 import com.mb.model.bonusPoint.BonusPoint;
 import com.mb.model.bonusPoint.NewReleaseBonusPoint;
 import com.mb.model.bonusPoint.RegularBonusPoint;
+import com.mb.model.film.Film;
+import com.mb.model.film.FilmType;
 import com.mb.model.price.BasicPrice;
 import com.mb.model.price.PremiumPrice;
 import com.mb.repository.FilmRepository;
