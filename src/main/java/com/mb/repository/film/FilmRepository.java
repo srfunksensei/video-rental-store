@@ -1,4 +1,4 @@
-package com.mb.repository;
+package com.mb.repository.film;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

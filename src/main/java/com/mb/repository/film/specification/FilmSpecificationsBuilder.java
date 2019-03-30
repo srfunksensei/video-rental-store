@@ -1,4 +1,4 @@
-package com.mb.repository.specification;
+package com.mb.repository.film.specification;
 
 import java.util.HashMap;
 import java.util.HashSet;

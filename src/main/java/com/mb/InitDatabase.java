@@ -21,7 +21,7 @@ import com.mb.model.film.Film;
 import com.mb.model.film.FilmType;
 import com.mb.model.price.BasicPrice;
 import com.mb.model.price.PremiumPrice;
-import com.mb.repository.FilmRepository;
+import com.mb.repository.film.FilmRepository;
 import com.mb.repository.price.BasicPriceRepository;
 import com.mb.repository.price.PremiumPriceRepository;
 

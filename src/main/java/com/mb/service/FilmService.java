@@ -12,8 +12,8 @@ import com.mb.assembler.FilmResourceAssemblerSupport;
 import com.mb.assembler.resource.FilmResource;
 import com.mb.model.film.Film;
 import com.mb.model.film.FilmType;
-import com.mb.repository.FilmRepository;
-import com.mb.repository.specification.FilmSpecificationsBuilder;
+import com.mb.repository.film.FilmRepository;
+import com.mb.repository.film.specification.FilmSpecificationsBuilder;
 
 import lombok.AllArgsConstructor;
 
