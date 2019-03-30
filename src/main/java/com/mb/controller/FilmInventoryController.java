@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mb.assembler.resource.FilmResource;
 import com.mb.model.film.FilmType;
-import com.mb.service.FilmService;
+import com.mb.service.film.FilmService;
 
 @RestController
 @RequestMapping(value = "/films", produces = "application/hal+json")
