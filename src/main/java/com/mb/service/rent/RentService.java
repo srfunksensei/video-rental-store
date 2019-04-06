@@ -1,5 +1,6 @@
 package com.mb.service.rent;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +15,10 @@ import com.mb.dto.CheckInDto;
 import com.mb.dto.PriceDto;
 import com.mb.model.film.Film;
 import com.mb.model.film.FilmType;
+import com.mb.model.price.RentalPrice;
 import com.mb.model.rental.Rental;
 import com.mb.repository.film.FilmRepository;
+import com.mb.repository.rent.RentRepository;
 import com.mb.service.rent.calculation.FilmCalculationStrategy;
 import com.mb.service.rent.calculation.NewReleaseFilmPriceCalculator;
 import com.mb.service.rent.calculation.OldFilmPriceCalculator;
@@ -26,6 +29,8 @@ import lombok.AllArgsConstructor;
 @Service("rentService")
 @AllArgsConstructor
 public class RentService {
+	
+	private final RentRepository rentRepository;
 
 	private final FilmRepository filmRepository;
 	private final FilmResourceAssemblerSupport filmResourceAssembler;
@@ -35,14 +40,21 @@ public class RentService {
 	private final NewReleaseFilmPriceCalculator newReleaseFilmPriceCalculator;
 
 	public RentResource calculate(final Set<CheckInDto> rent) {
-		final Set<Long> filmIds = rent.stream().map(CheckInDto::getFilmId).collect(Collectors.toSet());
-		final Set<Film> films = filmRepository.findByIdIn(filmIds);
-
-		final List<PriceDto> prices = collectPrices(films, rent);
-		final Optional<PriceDto> rentPrice = prices.stream()
-				.reduce((x, y) -> new PriceDto(x.getValue().add(y.getValue()), x.getCurrency()));
+		final Set<Film> films = getFilms(rent);
+		final Optional<PriceDto> rentPrice = getPrice(films, rent);
 
 		return createRentResource(Optional.empty(), films, rentPrice.get());
+	}
+	
+	private Set<Film> getFilms(final Set<CheckInDto> rent) {
+		final Set<Long> filmIds = rent.stream().map(CheckInDto::getFilmId).collect(Collectors.toSet());
+		return filmRepository.findByIdIn(filmIds);
+	}
+	
+	private Optional<PriceDto> getPrice(final Set<Film> films, final Set<CheckInDto> rent) {
+		final List<PriceDto> prices = collectPrices(films, rent);
+		return prices.stream()
+				.reduce((x, y) -> new PriceDto(x.getValue().add(y.getValue()), x.getCurrency()));
 	}
 
 	private List<PriceDto> collectPrices(final Set<Film> films, final Set<CheckInDto> rent) {
@@ -92,5 +104,31 @@ public class RentService {
 		resource.setPrice(price);
 		resource.setFilms(films.stream().map(filmResourceAssembler::toResource).collect(Collectors.toList()));
 		return resource;
+	}
+	
+	public Optional<RentResource> checkIn(final Set<CheckInDto> rent) {
+		final Set<Film> films = getFilms(rent);
+		final Optional<PriceDto> rentPrice = getPrice(films, rent);
+		
+		final Optional<Rental> optionalRental = createRental(rentPrice);
+		if (optionalRental.isPresent()) {
+			final Rental rental = rentRepository.save(optionalRental.get());
+			final RentResource rentResource = createRentResource(Optional.of(rental), films, rentPrice.get());
+			return Optional.of(rentResource);
+		}
+		
+		return Optional.empty();
+	}
+	
+	private Optional<Rental> createRental(final Optional<PriceDto> optionalPrice) {
+		if (optionalPrice.isPresent()) {
+			final PriceDto price = optionalPrice.get();
+			final RentalPrice rentalPrice = new RentalPrice(LocalDate.now(), LocalDate.now(), price.getCurrency(), price.getValue());
+			
+			final Rental rental = new Rental(LocalDate.now(), LocalDate.now(), rentalPrice);
+			return Optional.of(rental);
+		}
+		
+		return Optional.empty();
 	}
 }

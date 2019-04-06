@@ -26,4 +26,11 @@ public class RentController {
 	public ResponseEntity<RentResource> calculate(@RequestBody Set<CheckInDto> rent) {
 		return new ResponseEntity<>(rentService.calculate(rent), HttpStatus.OK);
 	}
+	
+	@PostMapping(value = "/checkIn")
+	public ResponseEntity<RentResource> checkIn(@RequestBody Set<CheckInDto> rent) {
+		return rentService.checkIn(rent) //
+				.map(ResponseEntity::ok) //
+				.orElse(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+	}
 }
