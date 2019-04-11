@@ -1,6 +1,8 @@
 package com.mb.model.film;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,12 +12,14 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.mb.model.AbstractEntity;
 import com.mb.model.bonusPoint.BonusPoint;
+import com.mb.model.rental.Rental;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,6 +54,9 @@ public class Film extends AbstractEntity {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	private BonusPoint bonus;
 	
+	@ManyToMany(mappedBy = "films")
+    private Set<Rental> rentals = new HashSet<>();
+	
 	public Film(LocalDate createdDate, LocalDate updatedDate, String title, int year, FilmType type, BonusPoint bonus) {
 		super(createdDate, updatedDate);
 		this.title = title;
@@ -57,5 +64,9 @@ public class Film extends AbstractEntity {
 		this.type = type;
 		this.bonus = bonus;
 	}
-
+	
+	public Set<Rental> addRental(final Rental rental) {
+		rentals.add(rental);
+		return rentals;
+	}
 }

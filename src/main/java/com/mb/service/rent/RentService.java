@@ -110,7 +110,7 @@ public class RentService {
 		final Set<Film> films = getFilms(rent);
 		final Optional<PriceDto> rentPrice = getPrice(films, rent);
 		
-		final Optional<Rental> optionalRental = createRental(rentPrice);
+		final Optional<Rental> optionalRental = createRental(rentPrice, films);
 		if (optionalRental.isPresent()) {
 			final Rental rental = rentRepository.save(optionalRental.get());
 			final RentResource rentResource = createRentResource(Optional.of(rental), films, rentPrice.get());
@@ -120,12 +120,12 @@ public class RentService {
 		return Optional.empty();
 	}
 	
-	private Optional<Rental> createRental(final Optional<PriceDto> optionalPrice) {
+	private Optional<Rental> createRental(final Optional<PriceDto> optionalPrice, final Set<Film> films) {
 		if (optionalPrice.isPresent()) {
 			final PriceDto price = optionalPrice.get();
 			final RentalPrice rentalPrice = new RentalPrice(LocalDate.now(), LocalDate.now(), price.getCurrency(), price.getValue());
 			
-			final Rental rental = new Rental(LocalDate.now(), LocalDate.now(), rentalPrice);
+			final Rental rental = new Rental(LocalDate.now(), LocalDate.now(), rentalPrice, films);
 			return Optional.of(rental);
 		}
 		
