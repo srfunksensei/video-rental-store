@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class FilmResource extends ResourceSupport {
+	private Long filmId;
 	private String title;
 	private int year;
 	private FilmType type;

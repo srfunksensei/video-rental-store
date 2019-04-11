@@ -17,6 +17,7 @@ public class FilmResourceAssemblerSupport extends ResourceAssemblerSupport<Film,
 	@Override
 	public FilmResource toResource(Film entity) {
 		FilmResource resource = createResourceWithId(entity.getId(), entity);
+		resource.setFilmId(entity.getId());
 		resource.setTitle(entity.getTitle());
 		resource.setYear(entity.getYear());
 		resource.setType(entity.getType());
