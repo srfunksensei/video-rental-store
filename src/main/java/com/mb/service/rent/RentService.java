@@ -193,4 +193,13 @@ public class RentService {
 			}
 		};
 	}
+	
+	public Optional<RentResource> findOne(Long id) {
+		return rentRepository.findById(id) //
+				.map(rentResourceAssembler::toResource);
+	}
+
+	public void deleteOne(final Long id) {
+		rentRepository.deleteById(id);
+	}
 }

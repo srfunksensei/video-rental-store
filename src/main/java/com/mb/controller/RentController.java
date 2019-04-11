@@ -7,7 +7,9 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,5 +43,17 @@ public class RentController {
 	@GetMapping
 	public HttpEntity<PagedResources<RentResource>> findAll(Pageable pageable) {
 		return new ResponseEntity<>(rentService.findAll(pageable), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/{rentId}")
+	public ResponseEntity<RentResource> findOne(@PathVariable Long rentId) {
+		return rentService.findOne(rentId) //
+				.map(ResponseEntity::ok) //
+				.orElse(ResponseEntity.notFound().build());
+	}
+
+	@DeleteMapping(value = "/{rentId}")
+	public void deleteOne(@PathVariable Long rentId) {
+		rentService.deleteOne(rentId);
 	}
 }
