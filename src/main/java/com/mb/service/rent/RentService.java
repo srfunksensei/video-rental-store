@@ -7,10 +7,17 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.stereotype.Service;
 
 import com.mb.assembler.FilmResourceAssemblerSupport;
 import com.mb.assembler.resource.RentResource;
+import com.mb.assembler.resource.RentResourceAssemblerSupport;
 import com.mb.dto.CheckInDto;
 import com.mb.dto.PriceDto;
 import com.mb.model.film.Film;
@@ -34,6 +41,9 @@ public class RentService {
 
 	private final FilmRepository filmRepository;
 	private final FilmResourceAssemblerSupport filmResourceAssembler;
+	
+	private final RentResourceAssemblerSupport rentResourceAssembler;
+	private final PagedResourcesAssembler<Rental> pagedAssembler;
 
 	private final OldFilmPriceCalculator oldFilmPriceCalculator;
 	private final RegularFilmPriceCalculator regularFilmPriceCalculator;
@@ -130,5 +140,57 @@ public class RentService {
 		}
 		
 		return Optional.empty();
+	}
+	
+	public PagedResources<RentResource> findAll(final Pageable pageable) {
+		final Pageable defaultPageable = getDefaultPageable(pageable);
+		
+		final Page<Rental> rentals = rentRepository.findAll(defaultPageable);
+		return pagedAssembler.toResource(rentals, rentResourceAssembler);
+	}
+	
+	private Pageable getDefaultPageable(final Pageable pageable) {
+		return new Pageable() {
+			
+			@Override
+			public Pageable previousOrFirst() {
+				return null;
+			}
+			
+			@Override
+			public Pageable next() {
+				return null;
+			}
+			
+			@Override
+			public boolean hasPrevious() {
+				return false;
+			}
+			
+			@Override
+			public Sort getSort() {
+				return pageable.getSortOr(Sort.by(Direction.DESC, "updatedDate")); // FIXME: use metadata instead of string
+			}
+			
+			@Override
+			public int getPageSize() {
+				return pageable.getPageSize();
+			}
+			
+			@Override
+			public int getPageNumber() {
+				return pageable.getPageNumber();
+			}
+			
+			@Override
+			public long getOffset() {
+				return pageable.getOffset();
+			}
+			
+			@Override
+			public Pageable first() {
+				return null;
+			}
+		};
 	}
 }

@@ -2,8 +2,12 @@ package com.mb.controller;
 
 import java.util.Set;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,18 +23,23 @@ import lombok.AllArgsConstructor;
 @RequestMapping(value = "/rents")
 @AllArgsConstructor
 public class RentController {
-	
+
 	private final RentService rentService;
-	
+
 	@PostMapping(value = "/calculate")
 	public ResponseEntity<RentResource> calculate(@RequestBody Set<CheckInDto> rent) {
 		return new ResponseEntity<>(rentService.calculate(rent), HttpStatus.OK);
 	}
-	
+
 	@PostMapping(value = "/checkIn")
 	public ResponseEntity<RentResource> checkIn(@RequestBody Set<CheckInDto> rent) {
 		return rentService.checkIn(rent) //
 				.map(ResponseEntity::ok) //
 				.orElse(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+	}
+
+	@GetMapping
+	public HttpEntity<PagedResources<RentResource>> findAll(Pageable pageable) {
+		return new ResponseEntity<>(rentService.findAll(pageable), HttpStatus.OK);
 	}
 }
