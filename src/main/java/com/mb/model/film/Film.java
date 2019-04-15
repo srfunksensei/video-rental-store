@@ -12,14 +12,14 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.mb.model.AbstractEntity;
 import com.mb.model.bonusPoint.BonusPoint;
-import com.mb.model.rental.Rental;
+import com.mb.model.rental.RentalFilm;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -54,8 +54,8 @@ public class Film extends AbstractEntity {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	private BonusPoint bonus;
 	
-	@ManyToMany(mappedBy = "films")
-    private Set<Rental> rentals = new HashSet<>();
+	@OneToMany(mappedBy = "film")
+    private Set<RentalFilm> rentals = new HashSet<>();
 	
 	public Film(LocalDate createdDate, LocalDate updatedDate, String title, int year, FilmType type, BonusPoint bonus) {
 		super(createdDate, updatedDate);
@@ -65,7 +65,7 @@ public class Film extends AbstractEntity {
 		this.bonus = bonus;
 	}
 	
-	public Set<Rental> addRental(final Rental rental) {
+	public Set<RentalFilm> addRental(final RentalFilm rental) {
 		rentals.add(rental);
 		return rentals;
 	}

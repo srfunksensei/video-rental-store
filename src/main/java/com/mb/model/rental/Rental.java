@@ -3,12 +3,12 @@ package com.mb.model.rental;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -18,12 +18,10 @@ import com.mb.model.price.RentalPrice;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "rental")
 @Getter
-@Setter
 @NoArgsConstructor
 public class Rental extends AbstractEntity {
 
@@ -31,17 +29,20 @@ public class Rental extends AbstractEntity {
 	@OneToOne(cascade = CascadeType.ALL, optional = false)
 	private RentalPrice price;
 	
-	@ManyToMany
-    @JoinTable(
-        name = "Rental_Film", 
-        joinColumns = { @JoinColumn(name = "rental_id") }, 
-        inverseJoinColumns = { @JoinColumn(name = "film_id") }
-    )
-    private Set<Film> films = new HashSet<>();
+	@OneToMany(mappedBy = "rental")
+    private Set<RentalFilm> films = new HashSet<>();
 	
-	public Rental(LocalDate createdDate, LocalDate updatedDate, RentalPrice price, Set<Film> films) {
+	public Set<Film> getFilms() {
+		return films.stream().map(RentalFilm::getFilm).collect(Collectors.toSet());
+	}
+	
+	public Rental(LocalDate createdDate, LocalDate updatedDate, RentalPrice price) {
 		super(createdDate, updatedDate);
 		this.price = price;
-		this.films = films;
+	}
+	
+	public Set<RentalFilm> addFilm(final RentalFilm film) {
+		films.add(film);
+		return films;
 	}
 }
