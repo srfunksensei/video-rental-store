@@ -35,9 +35,8 @@ public class RentController {
 
 	@PostMapping(value = "/checkIn")
 	public ResponseEntity<RentResource> checkIn(@RequestBody Set<CheckInDto> rent) {
-		return rentService.checkIn(rent) //
-				.map(ResponseEntity::ok) //
-				.orElse(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+		final RentResource r = rentService.checkIn(rent);
+		return new ResponseEntity<>(r, HttpStatus.CREATED);
 	}
 
 	@GetMapping
