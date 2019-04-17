@@ -7,6 +7,7 @@ import org.springframework.hateoas.ResourceSupport;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.mb.dto.PriceDto;
+import com.mb.model.rental.RentalStatus;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,4 +21,5 @@ public class RentResource extends ResourceSupport {
 	private Long rentId;
 	private List<FilmResource> films;
 	private PriceDto price;
+	private RentalStatus status;
 }

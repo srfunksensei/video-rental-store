@@ -2,6 +2,7 @@ package com.mb.model.rental;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,5 +49,14 @@ public class Rental extends AbstractEntity {
 	public Set<RentalFilm> addRentalFilm(final RentalFilm film) {
 		films.add(film);
 		return films;
+	}
+	
+	public RentalStatus getStatus() {
+		return isClosed() ? RentalStatus.RETURNED : RentalStatus.RENTED;
+	}
+	
+	private boolean isClosed() {
+		final List<RentalStatus> statuses = films.stream().map(RentalFilm::getStatus).collect(Collectors.toList());
+		return statuses.stream().allMatch(s -> s.equals(RentalStatus.RETURNED));
 	}
 }
