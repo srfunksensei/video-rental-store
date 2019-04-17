@@ -22,15 +22,15 @@ public abstract class AbstractEntity {
 	
 	@Id
 	@GeneratedValue
-	private Long id;
+	protected Long id;
 
 	@Column(updatable = false, nullable = false)
 	@CreatedDate
-	private LocalDate createdDate;
+	protected LocalDate createdDate;
 
 	@Column(nullable = false)
 	@LastModifiedDate
-	private LocalDate updatedDate;
+	protected LocalDate updatedDate;
 
 	protected AbstractEntity(LocalDate createdDate, LocalDate updatedDate) {
 		this.createdDate = createdDate;
