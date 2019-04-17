@@ -32,6 +32,10 @@ public class Rental extends AbstractEntity {
 	@OneToMany(mappedBy = "rental")
     private Set<RentalFilm> films = new HashSet<>();
 	
+	public Set<RentalFilm> getRentalFilms() {
+		return films;
+	}
+	
 	public Set<Film> getFilms() {
 		return films.stream().map(RentalFilm::getFilm).collect(Collectors.toSet());
 	}
@@ -41,7 +45,7 @@ public class Rental extends AbstractEntity {
 		this.price = price;
 	}
 	
-	public Set<RentalFilm> addFilm(final RentalFilm film) {
+	public Set<RentalFilm> addRentalFilm(final RentalFilm film) {
 		films.add(film);
 		return films;
 	}

@@ -1,6 +1,7 @@
 package com.mb.model.rental;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -36,5 +37,17 @@ public class RentalFilm extends AbstractEntity {
 		this.film = film;
 		this.rental = rental;
 		this.numOfDaysToRent = numOfDaysToRent;
+	}
+
+	public boolean isOverdue() {
+		return createdDate.plusDays(numOfDaysToRent).compareTo(LocalDate.now()) > 0;
+	}
+	
+	public Long getOverdueDays() {
+		return getActualRentedDays() - numOfDaysToRent;
+	}
+	
+	public Long getActualRentedDays() {
+		return ChronoUnit.DAYS.between(createdDate, LocalDate.now());
 	}
 }

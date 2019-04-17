@@ -23,6 +23,7 @@ import com.mb.assembler.resource.RentResourceAssemblerSupport;
 import com.mb.dto.CheckInDto;
 import com.mb.dto.PriceDto;
 import com.mb.model.film.Film;
+import com.mb.model.price.Price;
 import com.mb.model.price.RentalPrice;
 import com.mb.model.rental.Rental;
 import com.mb.model.rental.RentalFilm;
@@ -84,14 +85,34 @@ public class RentService {
 			
 			final RentalFilm rf = new RentalFilm(LocalDate.now(), LocalDate.now(), film, rental, numOfDaysToRent);
 			film.addRental(rf);
-			rental.addFilm(rf);
+			rental.addRentalFilm(rf);
 			rentalFilms.add(rf);
 		}
 		
 		rentalFilmRepository.saveAll(rentalFilms);
 		return rentRepository.save(rental);
 	}
-
+	
+	public Optional<PriceDto> checkOut(final Long rentId, final Set<Long> filmIds) {
+		Optional<Rental> rentalOpt = rentRepository.findById(rentId);
+		if (!rentalOpt.isPresent()) {
+			return Optional.empty();
+		}
+		
+		final Rental rental = rentalOpt.get();
+		
+		final Optional<PriceDto> priceTotalOpt = rentCalculator.calculateCheckOutTotal(rental, filmIds);
+		if (!priceTotalOpt.isPresent()) {
+			return Optional.empty();
+		}
+		
+		final Price priceCharged = rental.getPrice();
+		final PriceDto priceTotal = priceTotalOpt.get();
+		final PriceDto priceSubcharged = new PriceDto(priceTotal.getValue().subtract(priceCharged.getValue()), priceTotal.getCurrency());
+		
+		return Optional.of(priceSubcharged);
+	}
+	
 	public PagedResources<RentResource> findAll(final Pageable pageable) {
 		final Pageable defaultPageable = getDefaultPageable(pageable);
 

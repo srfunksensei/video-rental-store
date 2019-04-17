@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mb.assembler.resource.RentResource;
 import com.mb.dto.CheckInDto;
+import com.mb.dto.PriceDto;
 import com.mb.service.rent.RentService;
 
 import lombok.AllArgsConstructor;
@@ -39,11 +41,18 @@ public class RentController {
 		return new ResponseEntity<>(r, HttpStatus.CREATED);
 	}
 
+	@PutMapping(value = "/checkOut/{rentId}")
+	public ResponseEntity<PriceDto> checkOut(@PathVariable Long rentId, @RequestBody Set<Long> filmIds) {
+		return rentService.checkOut(rentId, filmIds)
+				.map(ResponseEntity::ok)
+				.orElse(ResponseEntity.notFound().build());
+	}
+
 	@GetMapping
 	public HttpEntity<PagedResources<RentResource>> findAll(Pageable pageable) {
 		return new ResponseEntity<>(rentService.findAll(pageable), HttpStatus.OK);
 	}
-	
+
 	@GetMapping(value = "/{rentId}")
 	public ResponseEntity<RentResource> findOne(@PathVariable Long rentId) {
 		return rentService.findOne(rentId) //
