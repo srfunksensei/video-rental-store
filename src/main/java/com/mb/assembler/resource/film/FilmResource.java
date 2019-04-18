@@ -1,4 +1,4 @@
-package com.mb.assembler.resource;
+package com.mb.assembler.resource.film;
 
 import org.springframework.hateoas.ResourceSupport;
 

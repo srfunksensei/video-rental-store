@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.mb.assembler.FilmResourceAssemblerSupport;
-import com.mb.assembler.resource.RentResource;
+import com.mb.assembler.resource.film.FilmResourceAssemblerSupport;
+import com.mb.assembler.resource.rent.RentResource;
 import com.mb.dto.CheckInDto;
 import com.mb.dto.PriceDto;
 import com.mb.model.film.Film;

@@ -20,8 +20,8 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.stereotype.Service;
 
-import com.mb.assembler.resource.RentResource;
-import com.mb.assembler.resource.RentResourceAssemblerSupport;
+import com.mb.assembler.resource.rent.RentResource;
+import com.mb.assembler.resource.rent.RentResourceAssemblerSupport;
 import com.mb.dto.CheckInDto;
 import com.mb.dto.PriceDto;
 import com.mb.model.film.Film;

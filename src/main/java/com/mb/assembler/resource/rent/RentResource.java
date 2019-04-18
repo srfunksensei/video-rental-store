@@ -1,4 +1,4 @@
-package com.mb.assembler.resource;
+package com.mb.assembler.resource.rent;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import org.springframework.hateoas.ResourceSupport;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.mb.assembler.resource.film.FilmResource;
 import com.mb.dto.PriceDto;
 import com.mb.model.rental.RentalStatus;
 

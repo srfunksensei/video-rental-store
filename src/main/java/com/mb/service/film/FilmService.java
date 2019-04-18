@@ -8,8 +8,8 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.stereotype.Service;
 
-import com.mb.assembler.FilmResourceAssemblerSupport;
-import com.mb.assembler.resource.FilmResource;
+import com.mb.assembler.resource.film.FilmResource;
+import com.mb.assembler.resource.film.FilmResourceAssemblerSupport;
 import com.mb.model.film.Film;
 import com.mb.model.film.FilmType;
 import com.mb.repository.film.FilmRepository;

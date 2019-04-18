@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mb.assembler.resource.RentResource;
+import com.mb.assembler.resource.rent.RentResource;
 import com.mb.dto.CheckInDto;
 import com.mb.dto.PriceDto;
 import com.mb.service.rent.RentService;

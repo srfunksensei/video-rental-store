@@ -1,9 +1,8 @@
-package com.mb.assembler;
+package com.mb.assembler.resource.film;
 
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import com.mb.assembler.resource.FilmResource;
 import com.mb.controller.FilmInventoryController;
 import com.mb.model.film.Film;
 

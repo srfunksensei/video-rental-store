@@ -1,11 +1,11 @@
-package com.mb.assembler.resource;
+package com.mb.assembler.resource.rent;
 
 import java.util.stream.Collectors;
 
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import com.mb.assembler.FilmResourceAssemblerSupport;
+import com.mb.assembler.resource.film.FilmResourceAssemblerSupport;
 import com.mb.controller.RentController;
 import com.mb.dto.PriceDto;
 import com.mb.model.price.Price;
