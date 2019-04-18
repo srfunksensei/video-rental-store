@@ -21,5 +21,6 @@ public class RentResource extends ResourceSupport {
 	private Long rentId;
 	private List<FilmResource> films;
 	private PriceDto price;
+	@JsonInclude(Include.NON_NULL)
 	private RentalStatus status;
 }

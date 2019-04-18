@@ -1,6 +1,8 @@
 package com.mb.service.rent;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -70,10 +72,12 @@ public class RentService {
 		final Rental rental = createRental(rentPrice, filmsWithDaysToRent);
 
 		rentResource.setRentId(rental.getId());
+		rentResource.setStatus(rental.getStatus());
 
 		return rentResource;
 	}
 
+	@Transactional
 	private Rental createRental(final PriceDto price, final Map<Film, Long> films) {
 		final RentalPrice rentalPrice = new RentalPrice(LocalDate.now(), LocalDate.now(), price.getCurrency(), price.getValue());			
 		final Rental rental = new Rental(LocalDate.now(), LocalDate.now(), rentalPrice);
@@ -93,6 +97,7 @@ public class RentService {
 		return rentRepository.save(rental);
 	}
 	
+	@Transactional
 	public Optional<PriceDto> checkOut(final Long rentId, final Set<Long> filmIds) {
 		Optional<Rental> rentalOpt = rentRepository.findById(rentId);
 		if (!rentalOpt.isPresent()) {
@@ -100,17 +105,26 @@ public class RentService {
 		}
 		
 		final Rental rental = rentalOpt.get();
+		if (isReturnedSameDay(rental.getCreatedDate())) {
+			final PriceDto priceSubcharged = new PriceDto(new BigDecimal(0L), rental.getActualPrice().getCurrencySymbol());
+			return Optional.of(priceSubcharged);
+		}
 		
 		final Optional<PriceDto> priceTotalOpt = rentCalculator.calculateCheckOutTotal(rental, filmIds);
 		if (!priceTotalOpt.isPresent()) {
 			return Optional.empty();
 		}
 		
-		final Price priceCharged = rental.getPrice();
 		final PriceDto priceTotal = priceTotalOpt.get();
-		final PriceDto priceSubcharged = new PriceDto(priceTotal.getValue().subtract(priceCharged.getValue()), priceTotal.getCurrency());
+		rental.setChargedPrice(priceTotal);
 		
+		final Price priceActual = rental.getActualPrice();
+		final PriceDto priceSubcharged = new PriceDto(priceTotal.getValue().subtract(priceActual.getValue()), priceTotal.getCurrency());
 		return Optional.of(priceSubcharged);
+	}
+	
+	private boolean isReturnedSameDay(final LocalDate date) {
+		return ChronoUnit.DAYS.between(date, LocalDate.now()) == 0;
 	}
 	
 	public PagedResources<RentResource> findAll(final Pageable pageable) {

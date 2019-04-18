@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import com.mb.model.film.Film;
 import com.mb.model.film.FilmType;
 import com.mb.model.rental.Rental;
 import com.mb.model.rental.RentalFilm;
+import com.mb.model.rental.RentalStatus;
 import com.mb.service.rent.calculation.FilmCalculationStrategy;
 import com.mb.service.rent.calculation.NewReleaseFilmPriceCalculator;
 import com.mb.service.rent.calculation.OldFilmPriceCalculator;
@@ -54,8 +56,7 @@ public class RentCalculator {
 		return prices;
 	}
 
-	private List<PriceDto> calculatePriceWithCalculatorByType(final FilmCalculationStrategy strategy,
-			final Set<Film> films, final Set<CheckInDto> rent) {
+	private List<PriceDto> calculatePriceWithCalculatorByType(final FilmCalculationStrategy strategy, final Set<Film> films, final Set<CheckInDto> rent) {
 		final List<Long> daysForRent = getDaysForRent(films, strategy.getFilmType(), rent);
 		return calculateWithCalculator(strategy, daysForRent);
 	}
@@ -77,34 +78,41 @@ public class RentCalculator {
 		return films.stream().filter(f -> f.getType().equals(type)).collect(Collectors.toSet());
 	}
 
-	private List<PriceDto> calculateWithCalculator(final FilmCalculationStrategy strategy,
-			final List<Long> daysForRent) {
+	private List<PriceDto> calculateWithCalculator(final FilmCalculationStrategy strategy, final List<Long> daysForRent) {
 		return daysForRent.stream().map(d -> strategy.calculatePrice(d)).collect(Collectors.toList());
 	}
 
 	private RentResource createRentResource(Optional<Rental> rent, Set<Film> films, PriceDto price) {
-		RentResource resource = new RentResource();
+		final RentResource resource = new RentResource();
+
 		if (rent.isPresent()) {
 			resource.setRentId(rent.get().getId());
+			resource.setStatus(rent.get().getStatus());
 		}
+
 		resource.setPrice(price);
 		resource.setFilms(films.stream().map(filmResourceAssembler::toResource).collect(Collectors.toList()));
+
 		return resource;
 	}
 
 	public Optional<PriceDto> calculateCheckOutTotal(final Rental rental, final Set<Long> filmIds) {
-		final Map<Film, Long> filmsWithActualDaysRented = filterFilmsWithActualDaysRented(rental.getRentalFilms(), filmIds);
+		final Map<Film, Long> filmsWithActualDaysRented = filterRenturnedFilmsWithActualDaysRented(rental.getRentalFilms(), filmIds);
 		final Set<Film> films = filmsWithActualDaysRented.keySet();
 		final Set<CheckInDto> rent = filmsWithActualDaysRented.entrySet().stream() //
+				.filter(e -> e.getValue() > 0) //
 				.map(e -> new CheckInDto(e.getValue(), e.getKey().getId())) //
 				.collect(Collectors.toSet());
-		
+
 		return getPrice(films, rent);
 	}
 
-	private Map<Film, Long> filterFilmsWithActualDaysRented(final Set<RentalFilm> rentalFilm, final Set<Long> filmIds) {
+	private Map<Film, Long> filterRenturnedFilmsWithActualDaysRented(final Set<RentalFilm> rentalFilm, final Set<Long> filmIds) {
+		final Predicate<RentalFilm> rentedFilmPredicate = rf -> filmIds.contains(rf.getFilm().getId())
+				&& RentalStatus.RENTED.equals(rf.getStatus());
+
 		return rentalFilm.stream() //
-				.filter(rf -> filmIds.contains(rf.getFilm().getId())) //
+				.filter(rentedFilmPredicate) //
 				.collect(Collectors.toMap(RentalFilm::getFilm, rf -> rf.getActualRentedDays()));
 	}
 }

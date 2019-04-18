@@ -26,7 +26,7 @@ public class RentResourceAssemblerSupport extends ResourceAssemblerSupport<Renta
 		RentResource resource = createResourceWithId(entity.getId(), entity);
 		resource.setRentId(entity.getId());
 		resource.setFilms(entity.getFilms().stream().map(filmResourceAssembler::toResource).collect(Collectors.toList()));
-		resource.setPrice(convertPrice(entity.getPrice()));
+		resource.setPrice(convertPrice(entity.getActualPrice()));
 		resource.setStatus(entity.getStatus());
 		return resource;
 	}
