@@ -105,7 +105,10 @@ public class RentService {
 		}
 		
 		final Rental rental = rentalOpt.get();
+		
 		if (isReturnedSameDay(rental.getCreatedDate())) {
+			rental.updateRentalStatusToReturnedForFilms(filmIds);
+			
 			final PriceDto priceSubcharged = new PriceDto(new BigDecimal(0L), rental.getActualPrice().getCurrencySymbol());
 			return Optional.of(priceSubcharged);
 		}
@@ -117,6 +120,7 @@ public class RentService {
 		
 		final PriceDto priceTotal = priceTotalOpt.get();
 		rental.setChargedPrice(priceTotal);
+		rental.updateRentalStatusToReturnedForFilms(filmIds);
 		
 		final Price priceActual = rental.getActualPrice();
 		final PriceDto priceSubcharged = new PriceDto(priceTotal.getValue().subtract(priceActual.getValue()), priceTotal.getCurrency());
