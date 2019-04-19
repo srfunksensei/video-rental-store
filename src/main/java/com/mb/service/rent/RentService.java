@@ -62,7 +62,12 @@ public class RentService {
 	}
 
 	@Transactional
-	public RentResource checkIn(final CheckInDto rent) {
+	public Optional<RentResource> checkIn(final CheckInDto rent) {
+		final Optional<Long> customerIdOpt = rent.getCustomerId();
+		if (!customerIdOpt.isPresent()) {
+			return Optional.empty();
+		}
+		
 		final Set<CheckInItemDto> rentItems = rent.getItems();
 		
 		final Set<Film> films = getFilms(rentItems);
@@ -79,7 +84,7 @@ public class RentService {
 		rentResource.setRentId(rental.getId());
 		rentResource.setStatus(rental.getStatus());
 
-		return rentResource;
+		return Optional.of(rentResource);
 	}
 
 	@Transactional

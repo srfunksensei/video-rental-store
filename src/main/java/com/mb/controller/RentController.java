@@ -37,8 +37,9 @@ public class RentController {
 
 	@PostMapping(value = "/checkIn")
 	public ResponseEntity<RentResource> checkIn(@RequestBody CheckInDto rent) {
-		final RentResource r = rentService.checkIn(rent);
-		return new ResponseEntity<>(r, HttpStatus.CREATED);
+		return rentService.checkIn(rent)
+				.map(r -> new ResponseEntity<>(r, HttpStatus.CREATED))
+				.orElse(ResponseEntity.badRequest().build());
 	}
 
 	@PutMapping(value = "/checkOut/{rentId}")
