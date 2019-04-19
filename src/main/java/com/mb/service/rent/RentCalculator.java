@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.mb.assembler.resource.film.FilmResourceAssemblerSupport;
 import com.mb.assembler.resource.rent.RentResource;
-import com.mb.dto.CheckInDto;
+import com.mb.dto.CheckInItemDto;
 import com.mb.dto.PriceDto;
 import com.mb.model.film.Film;
 import com.mb.model.film.FilmType;
@@ -36,41 +36,41 @@ public class RentCalculator {
 	private final RegularFilmPriceCalculator regularFilmPriceCalculator;
 	private final NewReleaseFilmPriceCalculator newReleaseFilmPriceCalculator;
 
-	public RentResource calculate(final Set<CheckInDto> rent, final Set<Film> films) {
-		final Optional<PriceDto> rentPrice = getPrice(films, rent);
+	public RentResource calculate(final Set<CheckInItemDto> rentItems, final Set<Film> films) {
+		final Optional<PriceDto> rentPrice = getPrice(films, rentItems);
 		return createRentResource(Optional.empty(), films, rentPrice.get());
 	}
 
-	private Optional<PriceDto> getPrice(final Set<Film> films, final Set<CheckInDto> rent) {
-		final List<PriceDto> prices = collectPrices(films, rent);
+	private Optional<PriceDto> getPrice(final Set<Film> films, final Set<CheckInItemDto> rentItems) {
+		final List<PriceDto> prices = collectPrices(films, rentItems);
 		return prices.stream().reduce((x, y) -> new PriceDto(x.getValue().add(y.getValue()), x.getCurrency()));
 	}
 
-	private List<PriceDto> collectPrices(final Set<Film> films, final Set<CheckInDto> rent) {
+	private List<PriceDto> collectPrices(final Set<Film> films, final Set<CheckInItemDto> rentItems) {
 		final List<PriceDto> prices = new ArrayList<>();
 
-		prices.addAll(calculatePriceWithCalculatorByType(oldFilmPriceCalculator, films, rent));
-		prices.addAll(calculatePriceWithCalculatorByType(regularFilmPriceCalculator, films, rent));
-		prices.addAll(calculatePriceWithCalculatorByType(newReleaseFilmPriceCalculator, films, rent));
+		prices.addAll(calculatePriceWithCalculatorByType(oldFilmPriceCalculator, films, rentItems));
+		prices.addAll(calculatePriceWithCalculatorByType(regularFilmPriceCalculator, films, rentItems));
+		prices.addAll(calculatePriceWithCalculatorByType(newReleaseFilmPriceCalculator, films, rentItems));
 
 		return prices;
 	}
 
-	private List<PriceDto> calculatePriceWithCalculatorByType(final FilmCalculationStrategy strategy, final Set<Film> films, final Set<CheckInDto> rent) {
-		final List<Long> daysForRent = getDaysForRent(films, strategy.getFilmType(), rent);
+	private List<PriceDto> calculatePriceWithCalculatorByType(final FilmCalculationStrategy strategy, final Set<Film> films, final Set<CheckInItemDto> rentItems) {
+		final List<Long> daysForRent = getDaysForRent(films, strategy.getFilmType(), rentItems);
 		return calculateWithCalculator(strategy, daysForRent);
 	}
 
-	private List<Long> getDaysForRent(final Set<Film> films, FilmType type, final Set<CheckInDto> rent) {
+	private List<Long> getDaysForRent(final Set<Film> films, FilmType type, final Set<CheckInItemDto> rentItems) {
 		final Set<Film> filmsByType = filterFilmsByType(films, type);
 		final Set<Long> filmIds = filmsByType.stream().map(Film::getId).collect(Collectors.toSet());
 
-		return getDaysForRent(rent, filmIds);
+		return getDaysForRent(rentItems, filmIds);
 	}
 
-	private List<Long> getDaysForRent(final Set<CheckInDto> rent, final Set<Long> filmIds) {
-		return rent.stream().filter(r -> filmIds.contains(r.getFilmId())) //
-				.map(CheckInDto::getNumOfDays) //
+	private List<Long> getDaysForRent(final Set<CheckInItemDto> rentItems, final Set<Long> filmIds) {
+		return rentItems.stream().filter(r -> filmIds.contains(r.getFilmId())) //
+				.map(CheckInItemDto::getNumOfDays) //
 				.collect(Collectors.toList());
 	}
 
@@ -99,9 +99,9 @@ public class RentCalculator {
 	public Optional<PriceDto> calculateCheckOutTotal(final Rental rental, final Set<Long> filmIds) {
 		final Map<Film, Long> filmsWithActualDaysRented = filterRenturnedFilmsWithActualDaysRented(rental.getRentalFilms(), filmIds);
 		final Set<Film> films = filmsWithActualDaysRented.keySet();
-		final Set<CheckInDto> rent = filmsWithActualDaysRented.entrySet().stream() //
+		final Set<CheckInItemDto> rent = filmsWithActualDaysRented.entrySet().stream() //
 				.filter(e -> e.getValue() > 0) //
-				.map(e -> new CheckInDto(e.getValue(), e.getKey().getId())) //
+				.map(e -> new CheckInItemDto(e.getValue(), e.getKey().getId())) //
 				.collect(Collectors.toSet());
 
 		return getPrice(films, rent);

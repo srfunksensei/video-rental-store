@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.mb.assembler.resource.rent.RentResource;
 import com.mb.assembler.resource.rent.RentResourceAssemblerSupport;
 import com.mb.dto.CheckInDto;
+import com.mb.dto.CheckInItemDto;
 import com.mb.dto.PriceDto;
 import com.mb.model.film.Film;
 import com.mb.model.price.Price;
@@ -48,25 +49,29 @@ public class RentService {
 	private final RentResourceAssemblerSupport rentResourceAssembler;
 	private final PagedResourcesAssembler<Rental> pagedAssembler;
 
-	public RentResource calculate(final Set<CheckInDto> rent) {
-		final Set<Film> films = getFilms(rent);
-		return rentCalculator.calculate(rent, films);
+	public RentResource calculate(final CheckInDto rent) {
+		final Set<CheckInItemDto> rentItems = rent.getItems();
+		
+		final Set<Film> films = getFilms(rentItems);
+		return rentCalculator.calculate(rentItems, films);
 	}
 
-	private Set<Film> getFilms(final Set<CheckInDto> rent) {
-		final Set<Long> filmIds = rent.stream().map(CheckInDto::getFilmId).collect(Collectors.toSet());
+	private Set<Film> getFilms(final Set<CheckInItemDto> rentItems) {
+		final Set<Long> filmIds = rentItems.stream().map(CheckInItemDto::getFilmId).collect(Collectors.toSet());
 		return filmRepository.findByIdIn(filmIds);
 	}
 
 	@Transactional
-	public RentResource checkIn(final Set<CheckInDto> rent) {
-		final Set<Film> films = getFilms(rent);
-		final RentResource rentResource = rentCalculator.calculate(rent, films);
+	public RentResource checkIn(final CheckInDto rent) {
+		final Set<CheckInItemDto> rentItems = rent.getItems();
+		
+		final Set<Film> films = getFilms(rentItems);
+		final RentResource rentResource = rentCalculator.calculate(rentItems, films);
 
-		Map<Film, Long> filmsWithDaysToRent = rent.stream() //
+		Map<Film, Long> filmsWithDaysToRent = rentItems.stream() //
 				.collect(Collectors.toMap(//
 						r -> films.stream().filter(f -> f.getId() == r.getFilmId()).findFirst().get(), //
-						CheckInDto::getNumOfDays));
+						CheckInItemDto::getNumOfDays));
 
 		final PriceDto rentPrice = rentResource.getPrice();
 		final Rental rental = createRental(rentPrice, filmsWithDaysToRent);

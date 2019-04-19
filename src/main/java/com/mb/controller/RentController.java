@@ -31,12 +31,12 @@ public class RentController {
 	private final RentService rentService;
 
 	@PostMapping(value = "/calculate")
-	public ResponseEntity<RentResource> calculate(@RequestBody Set<CheckInDto> rent) {
+	public ResponseEntity<RentResource> calculate(@RequestBody CheckInDto rent) {
 		return new ResponseEntity<>(rentService.calculate(rent), HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/checkIn")
-	public ResponseEntity<RentResource> checkIn(@RequestBody Set<CheckInDto> rent) {
+	public ResponseEntity<RentResource> checkIn(@RequestBody CheckInDto rent) {
 		final RentResource r = rentService.checkIn(rent);
 		return new ResponseEntity<>(r, HttpStatus.CREATED);
 	}
