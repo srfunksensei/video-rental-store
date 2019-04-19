@@ -101,6 +101,8 @@ public class RentService {
 			final Film film = entry.getKey();
 			final Long numOfDaysToRent = entry.getValue();
 			
+			customer.addBonusPoints(film.getBonus().getValue());
+			
 			final RentalFilm rf = new RentalFilm(LocalDate.now(), LocalDate.now(), film, rental, numOfDaysToRent);
 			film.addRental(rf);
 			rental.addRentalFilm(rf);
