@@ -1,13 +1,18 @@
 package com.mb.model.customer;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.mb.model.AbstractEntity;
+import com.mb.model.rental.Rental;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +37,9 @@ public class Customer extends AbstractEntity {
 	@Column(name = "bonus_points", nullable = false)
 	private Long bonusPoints;
 	
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+	private Set<Rental> rentals = new HashSet<>();
+	
 	public Customer(LocalDate createdDate, LocalDate updatedDate, String firstName, String lastName, String username,
 			Long bonusPoints) {
 		super(createdDate, updatedDate);
@@ -44,5 +52,9 @@ public class Customer extends AbstractEntity {
 	public Long addBonusPoints(final Long points) {
 		bonusPoints += points;
 		return bonusPoints;
+	}
+	
+	public void addRental(final Rental rental) {
+		rentals.add(rental);
 	}
 }

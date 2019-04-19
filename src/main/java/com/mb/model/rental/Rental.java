@@ -9,12 +9,14 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.mb.dto.PriceDto;
 import com.mb.model.AbstractEntity;
+import com.mb.model.customer.Customer;
 import com.mb.model.film.Film;
 import com.mb.model.price.RentalPrice;
 
@@ -37,6 +39,10 @@ public class Rental extends AbstractEntity {
 
 	@OneToMany(mappedBy = "rental")
 	private Set<RentalFilm> films = new HashSet<>();
+	
+	@ManyToOne
+	@JoinColumn(name = "customer_id", nullable = false)
+	private Customer customer;
 
 	public Set<RentalFilm> getRentalFilms() {
 		return films;
