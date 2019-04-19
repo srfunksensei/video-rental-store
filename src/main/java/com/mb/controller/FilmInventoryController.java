@@ -8,7 +8,6 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,11 +34,6 @@ public class FilmInventoryController {
 		return filmService.findOne(filmId) //
 				.map(ResponseEntity::ok) //
 				.orElse(ResponseEntity.notFound().build());
-	}
-
-	@DeleteMapping(value = "/{filmId}")
-	public void deleteOne(@PathVariable Long filmId) {
-		filmService.deleteOne(filmId);
 	}
 
 	@GetMapping

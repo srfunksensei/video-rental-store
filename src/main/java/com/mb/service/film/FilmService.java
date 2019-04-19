@@ -31,10 +31,6 @@ public class FilmService {
 				.map(filmResourceAssembler::toResource);
 	}
 
-	public void deleteOne(final Long id) {
-		filmRepository.deleteById(id);
-	}
-	
 	public PagedResources<FilmResource> findAll( //
 			Optional<String> title, Optional<FilmType> type, //
 			Pageable pageable) {
