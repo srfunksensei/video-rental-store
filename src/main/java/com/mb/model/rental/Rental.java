@@ -64,10 +64,11 @@ public class Rental extends AbstractEntity {
 		setUpdatedDate(LocalDate.now());
 	}
 
-	public Rental(LocalDate createdDate, LocalDate updatedDate, RentalPrice actualPrice) {
+	public Rental(LocalDate createdDate, LocalDate updatedDate, RentalPrice actualPrice, Customer customer) {
 		super(createdDate, updatedDate);
 		this.actualPrice = actualPrice;
 		this.chargedPrice = new RentalPrice(actualPrice.getCreatedDate(), actualPrice.getUpdatedDate(), actualPrice.getCurrencySymbol(), actualPrice.getValue());
+		this.customer = customer;
 	}
 
 	public Set<RentalFilm> addRentalFilm(final RentalFilm film) {

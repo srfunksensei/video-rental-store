@@ -25,11 +25,13 @@ import com.mb.assembler.resource.rent.RentResourceAssemblerSupport;
 import com.mb.dto.CheckInDto;
 import com.mb.dto.CheckInItemDto;
 import com.mb.dto.PriceDto;
+import com.mb.model.customer.Customer;
 import com.mb.model.film.Film;
 import com.mb.model.price.Price;
 import com.mb.model.price.RentalPrice;
 import com.mb.model.rental.Rental;
 import com.mb.model.rental.RentalFilm;
+import com.mb.repository.customer.CustomerRepository;
 import com.mb.repository.film.FilmRepository;
 import com.mb.repository.rent.RentRepository;
 import com.mb.repository.rent.RentalFilmRepository;
@@ -43,6 +45,7 @@ public class RentService {
 	private final RentRepository rentRepository;
 	private final FilmRepository filmRepository;
 	private final RentalFilmRepository rentalFilmRepository;
+	private final CustomerRepository customerRepository;
 
 	private final RentCalculator rentCalculator;
 
@@ -63,34 +66,35 @@ public class RentService {
 
 	@Transactional
 	public Optional<RentResource> checkIn(final CheckInDto rent) {
-		final Optional<Long> customerIdOpt = rent.getCustomerId();
-		if (!customerIdOpt.isPresent()) {
+		final Optional<Customer> customerOpt = findCustomer(rent.getCustomerId());
+		if (!customerOpt.isPresent()) {
 			return Optional.empty();
 		}
 		
-		final Set<CheckInItemDto> rentItems = rent.getItems();
-		
-		final Set<Film> films = getFilms(rentItems);
-		final RentResource rentResource = rentCalculator.calculate(rentItems, films);
-
-		Map<Film, Long> filmsWithDaysToRent = rentItems.stream() //
-				.collect(Collectors.toMap(//
-						r -> films.stream().filter(f -> f.getId() == r.getFilmId()).findFirst().get(), //
-						CheckInItemDto::getNumOfDays));
-
+		final RentResource rentResource = calculate(rent);
 		final PriceDto rentPrice = rentResource.getPrice();
-		final Rental rental = createRental(rentPrice, filmsWithDaysToRent);
+
+		final Map<Film, Long> filmsWithDaysToRent = getFilmsWithDaysToRent(rent.getItems());
+		
+		final Rental rental = createRental(customerOpt.get(), rentPrice, filmsWithDaysToRent);
 
 		rentResource.setRentId(rental.getId());
 		rentResource.setStatus(rental.getStatus());
 
 		return Optional.of(rentResource);
 	}
+	
+	private Map<Film, Long> getFilmsWithDaysToRent(final Set<CheckInItemDto> rentItems) {
+		final Set<Film> films = getFilms(rentItems);
+		return rentItems.stream() //
+				.collect(Collectors.toMap(//
+						r -> films.stream().filter(f -> f.getId() == r.getFilmId()).findFirst().get(), //
+						CheckInItemDto::getNumOfDays));
+	}
 
-	@Transactional
-	private Rental createRental(final PriceDto price, final Map<Film, Long> films) {
+	private Rental createRental(final Customer customer, final PriceDto price, final Map<Film, Long> films) {
 		final RentalPrice rentalPrice = new RentalPrice(LocalDate.now(), LocalDate.now(), price.getCurrency(), price.getValue());			
-		final Rental rental = new Rental(LocalDate.now(), LocalDate.now(), rentalPrice);
+		final Rental rental = new Rental(LocalDate.now(), LocalDate.now(), rentalPrice, customer);
 		
 		final List<RentalFilm> rentalFilms = new ArrayList<>();
 		for(Map.Entry<Film, Long> entry : films.entrySet()) {
@@ -105,6 +109,14 @@ public class RentService {
 		
 		rentalFilmRepository.saveAll(rentalFilms);
 		return rentRepository.save(rental);
+	}
+	
+	private Optional<Customer> findCustomer(Optional<Long> customerIdOpt) {
+		if (!customerIdOpt.isPresent()) {
+			return Optional.empty();
+		}
+		
+		return customerRepository.findById(customerIdOpt.get());
 	}
 	
 	@Transactional
