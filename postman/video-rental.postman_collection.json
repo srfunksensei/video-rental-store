@@ -1,0 +1,306 @@
+{
+	"id": "12d48599-873b-480f-9dce-61d1fdec87d3",
+	"name": "video-rental",
+	"description": "",
+	"auth": null,
+	"events": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "b8fc0739-4a65-4c10-aa18-07cd843cb02f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "c17f922e-9e14-41ea-80e4-d23e3e633a38",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variables": [
+		{
+			"key": "HOST",
+			"value": "http://localhost:8080",
+			"disabled": false
+		}
+	],
+	"order": [],
+	"folders_order": [
+		"40e0baeb-9f63-434f-890b-6143f111bf6a",
+		"864674be-e958-425f-9d09-e8229b67d877",
+		"99774b1d-5925-42cf-925c-766cd6fdc71c"
+	],
+	"folders": [
+		{
+			"id": "99774b1d-5925-42cf-925c-766cd6fdc71c",
+			"name": "customers",
+			"description": "",
+			"auth": null,
+			"events": null,
+			"collection": "12d48599-873b-480f-9dce-61d1fdec87d3",
+			"folder": null,
+			"order": [
+				"4c0e2071-b251-46cc-adcc-50e7674693ab",
+				"e516f0ac-f18b-44bf-8530-ea5557ef5d3d",
+				"69278543-f44d-49d1-990c-f151a5ec702c"
+			],
+			"folders_order": []
+		},
+		{
+			"id": "40e0baeb-9f63-434f-890b-6143f111bf6a",
+			"name": "films",
+			"description": "",
+			"auth": null,
+			"events": null,
+			"collection": "12d48599-873b-480f-9dce-61d1fdec87d3",
+			"folder": null,
+			"order": [
+				"5ca59059-b2ce-4d4f-ae33-6ee4eea5f7a0",
+				"6b0fbc02-6b4c-4f65-bcae-556824e207ec"
+			],
+			"folders_order": []
+		},
+		{
+			"id": "864674be-e958-425f-9d09-e8229b67d877",
+			"name": "rents",
+			"description": "",
+			"auth": null,
+			"events": null,
+			"collection": "12d48599-873b-480f-9dce-61d1fdec87d3",
+			"folder": null,
+			"order": [
+				"0e733c12-e9ec-4262-9ca0-2117bbb97468",
+				"19d7edad-5581-4cd0-acaf-e80919422b16",
+				"a2028d2c-91bb-4d47-a621-e3e7991abbcd",
+				"d6abd575-095e-4860-b345-9c5b60c87c22",
+				"4bf53e83-f1f1-4475-a045-258221a91f9e",
+				"e8a0cca1-aca3-4876-9766-43b7160a5237"
+			],
+			"folders_order": []
+		}
+	],
+	"requests": [
+		{
+			"id": "0e733c12-e9ec-4262-9ca0-2117bbb97468",
+			"name": "/rents",
+			"url": "{{HOST}}/rents",
+			"description": "Retrieves all rents",
+			"data": null,
+			"dataMode": null,
+			"headerData": [],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "864674be-e958-425f-9d09-e8229b67d877",
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "19d7edad-5581-4cd0-acaf-e80919422b16",
+			"name": "/rents/{id}",
+			"url": "{{HOST}}/rents/13",
+			"description": "Retrieves rent (if exist)",
+			"data": null,
+			"dataMode": null,
+			"headerData": [],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "864674be-e958-425f-9d09-e8229b67d877",
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "4bf53e83-f1f1-4475-a045-258221a91f9e",
+			"name": "/rents/checkIn",
+			"url": "{{HOST}}/rents/checkIn",
+			"description": "Creates a new rental",
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"name": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"type": "text"
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "864674be-e958-425f-9d09-e8229b67d877",
+			"rawModeData": "{\n\t\"customerId\": 9,\n\t\"items\" : [\n\t\t{\n\t\t\t\"numOfDays\": 5,\n\t\t\t\"filmId\": 5\n\t\t},\n\t\t{\n\t\t\t\"numOfDays\": 7,\n\t\t\t\"filmId\": 3\n\t\t},\n\t\t{\n\t\t\t\"numOfDays\": 1,\n\t\t\t\"filmId\": 7\n\t\t}\n\t]\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "4c0e2071-b251-46cc-adcc-50e7674693ab",
+			"name": "/customers",
+			"url": "{{HOST}}/customers",
+			"description": "Retrieves all customers",
+			"data": null,
+			"dataMode": null,
+			"headerData": [],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "99774b1d-5925-42cf-925c-766cd6fdc71c",
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "5ca59059-b2ce-4d4f-ae33-6ee4eea5f7a0",
+			"name": "/films",
+			"url": "{{HOST}}/films",
+			"description": "Retrieves pagable collection of films",
+			"data": null,
+			"dataMode": null,
+			"headerData": [],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "40e0baeb-9f63-434f-890b-6143f111bf6a",
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "69278543-f44d-49d1-990c-f151a5ec702c",
+			"name": "/customer/{id}",
+			"url": "{{HOST}}/customers/9",
+			"description": "Retrieves customer (if exist)",
+			"data": null,
+			"dataMode": null,
+			"headerData": [],
+			"method": "DELETE",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "99774b1d-5925-42cf-925c-766cd6fdc71c",
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "6b0fbc02-6b4c-4f65-bcae-556824e207ec",
+			"name": "/films/{id}",
+			"url": "{{HOST}}/films/3",
+			"description": "Retrieves film (if exists)",
+			"data": null,
+			"dataMode": null,
+			"headerData": [],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "40e0baeb-9f63-434f-890b-6143f111bf6a",
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "a2028d2c-91bb-4d47-a621-e3e7991abbcd",
+			"name": "/rents/{id}",
+			"url": "{{HOST}}/rents/13",
+			"description": "Deletes rent",
+			"data": null,
+			"dataMode": null,
+			"headerData": [],
+			"method": "DELETE",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "864674be-e958-425f-9d09-e8229b67d877",
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "d6abd575-095e-4860-b345-9c5b60c87c22",
+			"name": "/rents/calculate",
+			"url": "{{HOST}}/rents/calculate",
+			"description": "Calculates rent price",
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"name": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"type": "text"
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "864674be-e958-425f-9d09-e8229b67d877",
+			"rawModeData": "{\n\t\"items\" : [\n\t\t{\n\t\t\t\"numOfDays\": 5,\n\t\t\t\"filmId\": 5\n\t\t},\n\t\t{\n\t\t\t\"numOfDays\": 7,\n\t\t\t\"filmId\": 3\n\t\t},\n\t\t{\n\t\t\t\"numOfDays\": 1,\n\t\t\t\"filmId\": 7\n\t\t}\n\t]\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "e516f0ac-f18b-44bf-8530-ea5557ef5d3d",
+			"name": "/customer/{id}",
+			"url": "{{HOST}}/customers/9",
+			"description": "Retrieves customer (if exist)",
+			"data": null,
+			"dataMode": null,
+			"headerData": [],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "99774b1d-5925-42cf-925c-766cd6fdc71c",
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "e8a0cca1-aca3-4876-9766-43b7160a5237",
+			"name": "/rents/checkOut/{id}",
+			"url": "{{HOST}}/rents/checkOut/13",
+			"description": "",
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"description": "",
+					"key": "Content-Type",
+					"name": "Content-Type",
+					"type": "text",
+					"value": "application/json"
+				}
+			],
+			"method": "PUT",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "864674be-e958-425f-9d09-e8229b67d877",
+			"rawModeData": "[ \n\t5, 3\n]",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		}
+	]
+}
