@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mb.model.rental.Rental;
 
-@Repository("rentRepository")
+@Repository
 public interface RentRepository extends JpaRepository<Rental, Long> {
 	
 	Page<Rental> findAll(Pageable pageable);

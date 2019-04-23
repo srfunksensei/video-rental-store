@@ -38,7 +38,7 @@ import com.mb.repository.rent.RentalFilmRepository;
 
 import lombok.AllArgsConstructor;
 
-@Service("rentService")
+@Service
 @AllArgsConstructor
 public class RentService {
 

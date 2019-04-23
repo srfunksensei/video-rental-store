@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mb.model.film.Film;
 
-@Repository("filmRepository")
+@Repository
 public interface FilmRepository extends JpaRepository<Film, Long> {
 
 	Page<Film> findAll(Pageable pageable);

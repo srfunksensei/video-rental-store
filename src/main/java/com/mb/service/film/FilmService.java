@@ -17,7 +17,7 @@ import com.mb.repository.film.specification.FilmSpecificationsBuilder;
 
 import lombok.AllArgsConstructor;
 
-@Service("filmService")
+@Service
 @AllArgsConstructor
 public class FilmService {
 	

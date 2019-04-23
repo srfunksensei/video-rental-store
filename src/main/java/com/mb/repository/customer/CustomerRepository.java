@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mb.model.customer.Customer;
 
-@Repository("customerRepository")
+@Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
 	Page<Customer> findAll(Pageable pageable);

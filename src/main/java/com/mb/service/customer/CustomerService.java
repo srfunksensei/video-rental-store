@@ -15,7 +15,7 @@ import com.mb.repository.customer.CustomerRepository;
 
 import lombok.AllArgsConstructor;
 
-@Service("customerService")
+@Service
 @AllArgsConstructor
 public class CustomerService {
 

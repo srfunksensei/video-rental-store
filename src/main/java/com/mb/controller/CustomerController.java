@@ -16,7 +16,7 @@ import com.mb.assembler.resource.customer.CustomerResource;
 import com.mb.service.customer.CustomerService;
 
 @RestController
-@RequestMapping(value = "/customers")
+@RequestMapping(value = "/customers", produces = "application/hal+json")
 public class CustomerController {
 	
 	private final CustomerService customerService;
