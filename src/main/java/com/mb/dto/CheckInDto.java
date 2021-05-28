@@ -12,6 +12,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class CheckInDto {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private Optional<Long> customerId;
+	private Long customerId;
 	private Set<CheckInItemDto> items;
 }

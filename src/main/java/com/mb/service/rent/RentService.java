@@ -66,7 +66,7 @@ public class RentService {
 
 	@Transactional
 	public Optional<RentResource> checkIn(final CheckInDto rent) {
-		final Optional<Customer> customerOpt = findCustomer(rent.getCustomerId());
+		final Optional<Customer> customerOpt = customerRepository.findById(rent.getCustomerId());
 		if (!customerOpt.isPresent()) {
 			return Optional.empty();
 		}
@@ -111,14 +111,6 @@ public class RentService {
 		
 		rentalFilmRepository.saveAll(rentalFilms);
 		return rentRepository.save(rental);
-	}
-	
-	private Optional<Customer> findCustomer(Optional<Long> customerIdOpt) {
-		if (!customerIdOpt.isPresent()) {
-			return Optional.empty();
-		}
-		
-		return customerRepository.findById(customerIdOpt.get());
 	}
 	
 	@Transactional
