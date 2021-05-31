@@ -7,5 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class CheckInItemDto {
 	private long numOfDays;
-	private long filmId;
+	private String filmId;
 }

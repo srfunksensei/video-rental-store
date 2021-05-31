@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.mb.model.rental.Rental;
 
 @Repository
-public interface RentRepository extends JpaRepository<Rental, Long> {
+public interface RentRepository extends JpaRepository<Rental, String> {
 	
 	Page<Rental> findAll(Pageable pageable);
 }

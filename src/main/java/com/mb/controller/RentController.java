@@ -43,7 +43,7 @@ public class RentController {
 	}
 
 	@PutMapping(value = "/checkOut/{rentId}")
-	public ResponseEntity<PriceDto> checkOut(@PathVariable Long rentId, @RequestBody Set<Long> filmIds) {
+	public ResponseEntity<PriceDto> checkOut(@PathVariable String rentId, @RequestBody Set<Long> filmIds) {
 		return rentService.checkOut(rentId, filmIds)
 				.map(ResponseEntity::ok)
 				.orElse(ResponseEntity.notFound().build());
@@ -55,14 +55,14 @@ public class RentController {
 	}
 
 	@GetMapping(value = "/{rentId}")
-	public ResponseEntity<RentResource> findOne(@PathVariable Long rentId) {
+	public ResponseEntity<RentResource> findOne(@PathVariable String rentId) {
 		return rentService.findOne(rentId) //
 				.map(ResponseEntity::ok) //
 				.orElse(ResponseEntity.notFound().build());
 	}
 
 	@DeleteMapping(value = "/{rentId}")
-	public void deleteOne(@PathVariable Long rentId) {
+	public void deleteOne(@PathVariable String rentId) {
 		rentService.deleteOne(rentId);
 	}
 }

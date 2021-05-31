@@ -27,14 +27,14 @@ public class CustomerController {
 	}
 	
 	@GetMapping(value = "/{customerId}")
-	public ResponseEntity<CustomerResource> findOne(@PathVariable Long customerId) {
+	public ResponseEntity<CustomerResource> findOne(@PathVariable String customerId) {
 		return customerService.findOne(customerId) //
 				.map(ResponseEntity::ok) //
 				.orElse(ResponseEntity.notFound().build());
 	}
 
 	@DeleteMapping(value = "/{customerId}")
-	public void deleteOne(@PathVariable Long customerId) {
+	public void deleteOne(@PathVariable String customerId) {
 		customerService.deleteOne(customerId);
 	}
 	

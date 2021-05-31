@@ -19,7 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RentResource extends ResourceSupport {
 	@JsonInclude(Include.NON_NULL)
-	private Long rentId;
+	private String rentId;
 	private List<FilmResource> films;
 	private PriceDto price;
 	@JsonInclude(Include.NON_NULL)

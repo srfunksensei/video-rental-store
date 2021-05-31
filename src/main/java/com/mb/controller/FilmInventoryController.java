@@ -30,7 +30,7 @@ public class FilmInventoryController {
 	}
 
 	@GetMapping(value = "/{filmId}")
-	public ResponseEntity<FilmResource> findOne(@PathVariable Long filmId) {
+	public ResponseEntity<FilmResource> findOne(@PathVariable String filmId) {
 		return filmService.findOne(filmId) //
 				.map(ResponseEntity::ok) //
 				.orElse(ResponseEntity.notFound().build());

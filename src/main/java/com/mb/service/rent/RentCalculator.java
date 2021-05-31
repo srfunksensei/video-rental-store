@@ -63,12 +63,12 @@ public class RentCalculator {
 
 	private List<Long> getDaysForRent(final Set<Film> films, FilmType type, final Set<CheckInItemDto> rentItems) {
 		final Set<Film> filmsByType = filterFilmsByType(films, type);
-		final Set<Long> filmIds = filmsByType.stream().map(Film::getId).collect(Collectors.toSet());
+		final Set<String> filmIds = filmsByType.stream().map(Film::getId).collect(Collectors.toSet());
 
 		return getDaysForRent(rentItems, filmIds);
 	}
 
-	private List<Long> getDaysForRent(final Set<CheckInItemDto> rentItems, final Set<Long> filmIds) {
+	private List<Long> getDaysForRent(final Set<CheckInItemDto> rentItems, final Set<String> filmIds) {
 		return rentItems.stream().filter(r -> filmIds.contains(r.getFilmId())) //
 				.map(CheckInItemDto::getNumOfDays) //
 				.collect(Collectors.toList());

@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -21,8 +22,9 @@ import lombok.Setter;
 public abstract class AbstractEntity {
 	
 	@Id
-	@GeneratedValue
-	protected Long id;
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	protected String id;
 
 	@Column(updatable = false, nullable = false)
 	@CreatedDate

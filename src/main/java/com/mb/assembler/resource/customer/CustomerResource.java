@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CustomerResource extends ResourceSupport {
-	private Long customerId;
+	private String customerId;
 	private String firstName;
 	private String lastName;
 	private String username;

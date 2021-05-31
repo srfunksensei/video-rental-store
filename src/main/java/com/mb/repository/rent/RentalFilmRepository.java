@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.mb.model.rental.RentalFilm;
 
 @Repository
-public interface RentalFilmRepository extends CrudRepository<RentalFilm, Long> {
+public interface RentalFilmRepository extends CrudRepository<RentalFilm, String> {
 }

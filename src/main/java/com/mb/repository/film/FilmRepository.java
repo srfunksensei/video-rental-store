@@ -11,10 +11,10 @@ import org.springframework.stereotype.Repository;
 import com.mb.model.film.Film;
 
 @Repository
-public interface FilmRepository extends JpaRepository<Film, Long> {
+public interface FilmRepository extends JpaRepository<Film, String> {
 
 	Page<Film> findAll(Pageable pageable);
 	Page<Film> findAll(Specification<Film> spec, Pageable pageable);
 	
-	Set<Film> findByIdIn(Set<Long> filmIds);
+	Set<Film> findByIdIn(Set<String> filmIds);
 }

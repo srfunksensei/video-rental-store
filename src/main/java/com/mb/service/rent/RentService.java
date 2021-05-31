@@ -60,7 +60,7 @@ public class RentService {
 	}
 
 	private Set<Film> getFilms(final Set<CheckInItemDto> rentItems) {
-		final Set<Long> filmIds = rentItems.stream().map(CheckInItemDto::getFilmId).collect(Collectors.toSet());
+		final Set<String> filmIds = rentItems.stream().map(CheckInItemDto::getFilmId).collect(Collectors.toSet());
 		return filmRepository.findByIdIn(filmIds);
 	}
 
@@ -114,7 +114,7 @@ public class RentService {
 	}
 	
 	@Transactional
-	public Optional<PriceDto> checkOut(final Long rentId, final Set<Long> filmIds) {
+	public Optional<PriceDto> checkOut(final String rentId, final Set<Long> filmIds) {
 		Optional<Rental> rentalOpt = rentRepository.findById(rentId);
 		if (!rentalOpt.isPresent()) {
 			return Optional.empty();
@@ -200,12 +200,12 @@ public class RentService {
 		};
 	}
 
-	public Optional<RentResource> findOne(Long id) {
+	public Optional<RentResource> findOne(String id) {
 		return rentRepository.findById(id) //
 				.map(rentResourceAssembler::toResource);
 	}
 
-	public void deleteOne(final Long id) {
+	public void deleteOne(final String id) {
 		rentRepository.deleteById(id);
 	}
 }

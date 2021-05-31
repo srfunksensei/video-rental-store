@@ -24,12 +24,12 @@ public class CustomerService {
 	private final CustomerResourceAssemblerSupport customerResourceAssembler;
 	private final PagedResourcesAssembler<Customer> pagedAssembler;
 
-	public Optional<CustomerResource> findOne(Long customerId) {
+	public Optional<CustomerResource> findOne(String customerId) {
 		return cutomerRepository.findById(customerId) //
 				.map(customerResourceAssembler::toResource);
 	}
 
-	public void deleteOne(final Long customerId) {
+	public void deleteOne(final String customerId) {
 		cutomerRepository.deleteById(customerId);
 	}
 

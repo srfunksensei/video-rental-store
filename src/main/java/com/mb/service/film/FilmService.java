@@ -26,7 +26,7 @@ public class FilmService {
 	private final FilmResourceAssemblerSupport filmResourceAssembler;
 	private final PagedResourcesAssembler<Film> pagedAssembler;
 	
-	public Optional<FilmResource> findOne(Long filmId) {
+	public Optional<FilmResource> findOne(String filmId) {
 		return filmRepository.findById(filmId) //
 				.map(filmResourceAssembler::toResource);
 	}

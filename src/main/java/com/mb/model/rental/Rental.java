@@ -30,7 +30,7 @@ public class Rental extends AbstractEntity {
 	private RentalPrice chargedPrice;
 
 	@OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
-	private Set<RentalFilm> films = new HashSet<>();
+	private final Set<RentalFilm> films = new HashSet<>();
 	
 	@ManyToOne
 	@JoinColumn(name = "customer_id", nullable = false)
