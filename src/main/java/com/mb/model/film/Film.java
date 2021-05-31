@@ -1,29 +1,15 @@
 package com.mb.model.film;
 
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
 import com.mb.model.AbstractEntity;
 import com.mb.model.bonusPoint.BonusPoint;
 import com.mb.model.rental.RentalFilm;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "film",
@@ -57,8 +43,7 @@ public class Film extends AbstractEntity {
 	@OneToMany(mappedBy = "film")
     private Set<RentalFilm> rentals = new HashSet<>();
 	
-	public Film(LocalDate createdDate, LocalDate updatedDate, String title, int year, FilmType type, BonusPoint bonus) {
-		super(createdDate, updatedDate);
+	public Film(final String title, final int year, final FilmType type, final BonusPoint bonus) {
 		this.title = title;
 		this.year = year;
 		this.type = type;

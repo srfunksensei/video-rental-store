@@ -1,22 +1,14 @@
 package com.mb.model.customer;
 
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import com.mb.model.AbstractEntity;
 import com.mb.model.rental.Rental;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "customer", indexes = { @Index(columnList = "username", name = "customer_username_idx") })
@@ -40,9 +32,7 @@ public class Customer extends AbstractEntity {
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
 	private Set<Rental> rentals = new HashSet<>();
 	
-	public Customer(LocalDate createdDate, LocalDate updatedDate, String firstName, String lastName, String username,
-			Long bonusPoints) {
-		super(createdDate, updatedDate);
+	public Customer(final String firstName, final String lastName, final String username, final Long bonusPoints) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;

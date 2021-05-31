@@ -93,8 +93,8 @@ public class RentService {
 	}
 
 	private Rental createRental(final Customer customer, final PriceDto price, final Map<Film, Long> films) {
-		final RentalPrice rentalPrice = new RentalPrice(LocalDate.now(), LocalDate.now(), price.getCurrency(), price.getValue());			
-		final Rental rental = new Rental(LocalDate.now(), LocalDate.now(), rentalPrice, customer);
+		final RentalPrice rentalPrice = new RentalPrice(price.getCurrency(), price.getValue());
+		final Rental rental = new Rental(rentalPrice, customer);
 		
 		final List<RentalFilm> rentalFilms = new ArrayList<>();
 		for(Map.Entry<Film, Long> entry : films.entrySet()) {
@@ -103,7 +103,7 @@ public class RentService {
 			
 			customer.addBonusPoints(film.getBonus().getValue());
 			
-			final RentalFilm rf = new RentalFilm(LocalDate.now(), LocalDate.now(), film, rental, numOfDaysToRent);
+			final RentalFilm rf = new RentalFilm(film, rental, numOfDaysToRent);
 			film.addRental(rf);
 			rental.addRentalFilm(rf);
 			rentalFilms.add(rf);

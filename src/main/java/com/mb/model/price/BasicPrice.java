@@ -1,19 +1,17 @@
 package com.mb.model.price;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-
-import lombok.NoArgsConstructor;
+import java.math.BigDecimal;
 
 @Entity
 @DiscriminatorValue(value = "basic_price")
 @NoArgsConstructor
 public class BasicPrice extends Price {
 
-	public BasicPrice(LocalDate createdDate, LocalDate updatedDate, String currencySymbol, BigDecimal value) {
-		super(createdDate, updatedDate, currencySymbol, value);
+	public BasicPrice(final String currencySymbol, final BigDecimal value) {
+		super(currencySymbol, value);
 	}
 }

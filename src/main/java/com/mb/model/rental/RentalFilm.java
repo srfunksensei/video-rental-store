@@ -1,22 +1,14 @@
 package com.mb.model.rental;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import com.mb.model.AbstractEntity;
 import com.mb.model.film.Film;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "rental_film")
@@ -40,8 +32,7 @@ public class RentalFilm extends AbstractEntity {
 	@Enumerated(EnumType.STRING)
     private RentalStatus status;
     
-    public RentalFilm(LocalDate createdDate, LocalDate updatedDate, Film film, Rental rental, Long numOfDaysToRent) {
-		super(createdDate, updatedDate);
+    public RentalFilm(final Film film, final Rental rental, final Long numOfDaysToRent) {
 		this.film = film;
 		this.rental = rental;
 		this.numOfDaysToRent = numOfDaysToRent;

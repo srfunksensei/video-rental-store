@@ -1,27 +1,19 @@
 package com.mb.model.rental;
 
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import com.mb.dto.PriceDto;
 import com.mb.model.AbstractEntity;
 import com.mb.model.customer.Customer;
 import com.mb.model.film.Film;
 import com.mb.model.price.RentalPrice;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "rental")
@@ -64,10 +56,9 @@ public class Rental extends AbstractEntity {
 		setUpdatedDate(LocalDate.now());
 	}
 
-	public Rental(LocalDate createdDate, LocalDate updatedDate, RentalPrice actualPrice, Customer customer) {
-		super(createdDate, updatedDate);
+	public Rental(final RentalPrice actualPrice, final Customer customer) {
 		this.actualPrice = actualPrice;
-		this.chargedPrice = new RentalPrice(actualPrice.getCreatedDate(), actualPrice.getUpdatedDate(), actualPrice.getCurrencySymbol(), actualPrice.getValue());
+		this.chargedPrice = new RentalPrice(actualPrice.getCurrencySymbol(), actualPrice.getValue());
 		this.customer = customer;
 	}
 

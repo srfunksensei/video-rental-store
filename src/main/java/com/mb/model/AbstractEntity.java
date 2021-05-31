@@ -26,14 +26,9 @@ public abstract class AbstractEntity {
 
 	@Column(updatable = false, nullable = false)
 	@CreatedDate
-	protected LocalDate createdDate;
+	protected LocalDate createdDate = LocalDate.now();
 
 	@Column(nullable = false)
 	@LastModifiedDate
-	protected LocalDate updatedDate;
-
-	protected AbstractEntity(LocalDate createdDate, LocalDate updatedDate) {
-		this.createdDate = createdDate;
-		this.updatedDate = updatedDate;
-	}
+	protected LocalDate updatedDate = LocalDate.now();
 }
