@@ -13,8 +13,8 @@ import com.mb.model.film.Film;
 @Repository
 public interface FilmRepository extends JpaRepository<Film, String> {
 
-	Page<Film> findAll(Pageable pageable);
-	Page<Film> findAll(Specification<Film> spec, Pageable pageable);
+	Page<Film> findAll(final Pageable pageable);
+	Page<Film> findAll(final Specification<Film> spec, Pageable pageable);
 	
-	Set<Film> findByIdIn(Set<String> filmIds);
+	Set<Film> findByIdIn(final Set<String> filmIds);
 }

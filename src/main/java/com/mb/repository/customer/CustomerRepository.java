@@ -10,5 +10,5 @@ import com.mb.model.customer.Customer;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, String> {
 
-	Page<Customer> findAll(Pageable pageable);
+	Page<Customer> findAll(final Pageable pageable);
 }

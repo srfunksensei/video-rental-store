@@ -10,5 +10,5 @@ import com.mb.model.rental.Rental;
 @Repository
 public interface RentRepository extends JpaRepository<Rental, String> {
 	
-	Page<Rental> findAll(Pageable pageable);
+	Page<Rental> findAll(final Pageable pageable);
 }
