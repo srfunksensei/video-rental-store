@@ -18,7 +18,7 @@ public class FilmWithTitleLike implements Specification<Film> {
 	
 	private static final long serialVersionUID = 360698723191032259L;
 	
-	private String title;
+	private final String title;
 
 	@Override
 	public Predicate toPredicate(Root<Film> root, CriteriaQuery<?> query, CriteriaBuilder cb) {

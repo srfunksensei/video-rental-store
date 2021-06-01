@@ -22,7 +22,7 @@ public class FilmSpecificationsBuilder {
 		params = new HashMap<>();
 	}
 
-	public FilmSpecificationsBuilder with(String key, String value) {
+	public FilmSpecificationsBuilder with(final String key, final String value) {
 		params.put(key, value);
 		return this;
 	}
@@ -37,7 +37,7 @@ public class FilmSpecificationsBuilder {
 			return null;
 		}
 
-		Iterator<Specification<Film>> iterator = specs.iterator();
+		final Iterator<Specification<Film>> iterator = specs.iterator();
 
 		Specification<Film> result = Specification.where(iterator.next());
 		while (iterator.hasNext()) {
@@ -50,15 +50,17 @@ public class FilmSpecificationsBuilder {
 	private Set<Specification<Film>> collectSpecifications() {
 		final Set<Specification<Film>> specs = new HashSet<>();
 
-		for (Map.Entry<String, String> param : params.entrySet()) {
+		for (final Map.Entry<String, String> param : params.entrySet()) {
 			if (param.getKey().equals(FilmSpecificationsBuilder.TITLE_SEARCH_KEY)) {
 				final String title = param.getValue();
-				if (!title.isEmpty()) {
+				if (title != null && !title.isEmpty()) {
 					specs.add(new FilmWithTitleLike(title));
 				}
 			} else if (param.getKey().equals(FilmSpecificationsBuilder.TYPE_SEARCH_KEY)) {
 				final String type = param.getValue();
-				specs.add(new FilmWithTypeEqual(FilmType.valueOf(type)));
+				if (type != null && !type.isEmpty()) {
+					specs.add(new FilmWithTypeEqual(FilmType.valueOf(type)));
+				}
 			}
 		}
 

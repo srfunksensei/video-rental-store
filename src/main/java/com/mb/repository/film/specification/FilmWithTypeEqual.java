@@ -19,7 +19,7 @@ public class FilmWithTypeEqual implements Specification<Film> {
 	
 	private static final long serialVersionUID = -8016601207618132990L;
 	
-	private FilmType type;
+	private final FilmType type;
 
 	@Override
 	public Predicate toPredicate(Root<Film> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
