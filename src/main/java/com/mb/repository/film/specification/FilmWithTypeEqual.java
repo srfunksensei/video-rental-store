@@ -1,17 +1,16 @@
 package com.mb.repository.film.specification;
 
+import com.mb.model.film.Film;
+import com.mb.model.film.FilmType;
+import com.mb.model.film.Film_;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.data.jpa.domain.Specification;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.springframework.data.jpa.domain.Specification;
-
-import com.mb.model.film.Film;
-import com.mb.model.film.FilmType;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
@@ -26,7 +25,7 @@ public class FilmWithTypeEqual implements Specification<Film> {
 		if (type == null) {
             return cb.isTrue(cb.literal(true));
         }
-        return cb.equal(root.get("type"), this.type); // FIXME: use metadata instead of string
+        return cb.equal(root.get(Film_.type), this.type);
 	}
 
 }
