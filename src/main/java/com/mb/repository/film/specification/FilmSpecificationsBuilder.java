@@ -51,12 +51,12 @@ public class FilmSpecificationsBuilder {
 		final Set<Specification<Film>> specs = new HashSet<>();
 
 		for (final Map.Entry<String, String> param : params.entrySet()) {
-			if (param.getKey().equals(FilmSpecificationsBuilder.TITLE_SEARCH_KEY)) {
+			if (FilmSpecificationsBuilder.TITLE_SEARCH_KEY.equals(param.getKey())) {
 				final String title = param.getValue();
 				if (title != null && !title.isEmpty()) {
 					specs.add(new FilmWithTitleLike(title));
 				}
-			} else if (param.getKey().equals(FilmSpecificationsBuilder.TYPE_SEARCH_KEY)) {
+			} else if (FilmSpecificationsBuilder.TYPE_SEARCH_KEY.equals(param.getKey())) {
 				final String type = param.getValue();
 				if (type != null && !type.isEmpty()) {
 					specs.add(new FilmWithTypeEqual(FilmType.valueOf(type)));
