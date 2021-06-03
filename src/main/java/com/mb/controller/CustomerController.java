@@ -40,6 +40,6 @@ public class CustomerController {
 	
 	@GetMapping
 	public HttpEntity<PagedResources<CustomerResource>> findAll(Pageable pageable) {
-		return new ResponseEntity<>(customerService.findAll(pageable), HttpStatus.OK);
+		return new ResponseEntity<>(customerService.findAll(null, pageable), HttpStatus.OK);
 	}
 }
