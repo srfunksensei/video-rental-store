@@ -1,14 +1,10 @@
 package com.mb.repository.customer;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.mb.model.customer.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import com.mb.model.customer.Customer;
-
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, String> {
-
-	Page<Customer> findAll(final Pageable pageable);
+public interface CustomerRepository extends JpaRepository<Customer, String>, JpaSpecificationExecutor<Customer> {
 }
