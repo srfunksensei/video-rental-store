@@ -37,4 +37,18 @@ public class GenericQuerySpecs {
                 root.get(attribute), value
         );
     }
+
+    public static <T> Specification<T> like(final SingularAttribute<T, String> attribute, final String value) {
+        return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(
+                criteriaBuilder.lower(root.get(attribute)), "%" + value + "%"
+        );
+    }
+
+    public static <T> Specification<T> andLike(final Specification<T> specs, final SingularAttribute<T, String> attribute, final String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return specs;
+        }
+
+        return specs.and(like(attribute, value));
+    }
 }
