@@ -96,7 +96,7 @@ public class RentCalculator {
 		return resource;
 	}
 
-	public Optional<PriceDto> calculateCheckOutTotal(final Rental rental, final Set<Long> filmIds) {
+	public Optional<PriceDto> calculateCheckOutTotal(final Rental rental, final Set<String> filmIds) {
 		final Map<Film, Long> filmsWithActualDaysRented = filterRenturnedFilmsWithActualDaysRented(rental.getRentalFilms(), filmIds);
 		final Set<Film> films = filmsWithActualDaysRented.keySet();
 		final Set<CheckInItemDto> rent = filmsWithActualDaysRented.entrySet().stream() //
@@ -107,7 +107,7 @@ public class RentCalculator {
 		return getPrice(films, rent);
 	}
 
-	private Map<Film, Long> filterRenturnedFilmsWithActualDaysRented(final Set<RentalFilm> rentalFilm, final Set<Long> filmIds) {
+	private Map<Film, Long> filterRenturnedFilmsWithActualDaysRented(final Set<RentalFilm> rentalFilm, final Set<String> filmIds) {
 		final Predicate<RentalFilm> rentedFilmPredicate = rf -> filmIds.contains(rf.getFilm().getId())
 				&& RentalStatus.RENTED.equals(rf.getStatus());
 

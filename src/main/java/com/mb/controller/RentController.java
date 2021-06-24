@@ -43,7 +43,7 @@ public class RentController {
 	}
 
 	@PutMapping(value = "/checkOut/{rentId}")
-	public ResponseEntity<PriceDto> checkOut(@PathVariable String rentId, @RequestBody Set<Long> filmIds) {
+	public ResponseEntity<PriceDto> checkOut(@PathVariable String rentId, @RequestBody Set<String> filmIds) {
 		return rentService.checkOut(rentId, filmIds)
 				.map(ResponseEntity::ok)
 				.orElse(ResponseEntity.notFound().build());

@@ -114,7 +114,7 @@ public class RentService {
 	}
 	
 	@Transactional
-	public Optional<PriceDto> checkOut(final String rentId, final Set<Long> filmIds) {
+	public Optional<PriceDto> checkOut(final String rentId, final Set<String> filmIds) {
 		Optional<Rental> rentalOpt = rentRepository.findById(rentId);
 		if (!rentalOpt.isPresent()) {
 			return Optional.empty();

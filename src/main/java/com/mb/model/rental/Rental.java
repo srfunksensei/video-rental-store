@@ -76,7 +76,7 @@ public class Rental extends AbstractEntity {
 		return statuses.stream().allMatch(s -> s.equals(RentalStatus.RETURNED));
 	}
 
-	public void updateRentalStatusToReturnedForFilms(final Set<Long> filmIds) {
+	public void updateRentalStatusToReturnedForFilms(final Set<String> filmIds) {
 		getRentalFilms().stream() //
 				.filter(rf -> filmIds.contains(rf.getFilm().getId())) //
 				.forEach(rf -> {
