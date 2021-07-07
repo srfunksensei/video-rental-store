@@ -73,7 +73,7 @@ public class Rental extends AbstractEntity {
 
 	private boolean isClosed() {
 		final List<RentalStatus> statuses = films.stream().map(RentalFilm::getStatus).collect(Collectors.toList());
-		return statuses.stream().allMatch(s -> s.equals(RentalStatus.RETURNED));
+		return !statuses.isEmpty() && statuses.stream().allMatch(s -> s.equals(RentalStatus.RETURNED));
 	}
 
 	public void updateRentalStatusToReturnedForFilms(final Set<String> filmIds) {

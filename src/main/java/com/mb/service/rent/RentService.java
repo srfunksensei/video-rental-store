@@ -10,8 +10,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
+import com.mb.exception.CheckInException;
+import com.mb.exception.CheckOutException;
+import com.mb.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,6 +38,7 @@ import com.mb.repository.rent.RentRepository;
 import com.mb.repository.rent.RentalFilmRepository;
 
 import lombok.AllArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -65,30 +67,32 @@ public class RentService {
 	}
 
 	@Transactional
-	public Optional<RentResource> checkIn(final CheckInDto rent) {
-		final Optional<Customer> customerOpt = customerRepository.findById(rent.getCustomerId());
-		if (!customerOpt.isPresent()) {
-			return Optional.empty();
+	public RentResource checkIn(final CheckInDto rent) {
+		final Customer customer = customerRepository.findById(rent.getCustomerId())
+				.orElseThrow(ResourceNotFoundException::new);
+
+		if (rent.getItems() == null || rent.getItems().isEmpty()) {
+			throw new CheckInException();
 		}
-		
+
 		final RentResource rentResource = calculate(rent);
 		final PriceDto rentPrice = rentResource.getPrice();
 
 		final Map<Film, Long> filmsWithDaysToRent = getFilmsWithDaysToRent(rent.getItems());
 		
-		final Rental rental = createRental(customerOpt.get(), rentPrice, filmsWithDaysToRent);
+		final Rental rental = createRental(customer, rentPrice, filmsWithDaysToRent);
 
 		rentResource.setRentId(rental.getId());
 		rentResource.setStatus(rental.getStatus());
 
-		return Optional.of(rentResource);
+		return rentResource;
 	}
 	
 	private Map<Film, Long> getFilmsWithDaysToRent(final Set<CheckInItemDto> rentItems) {
 		final Set<Film> films = getFilms(rentItems);
 		return rentItems.stream() //
 				.collect(Collectors.toMap(//
-						r -> films.stream().filter(f -> f.getId() == r.getFilmId()).findFirst().get(), //
+						r -> films.stream().filter(f -> f.getId().equals(r.getFilmId())).findFirst().get(), //
 						CheckInItemDto::getNumOfDays));
 	}
 
@@ -97,7 +101,7 @@ public class RentService {
 		final Rental rental = new Rental(rentalPrice, customer);
 		
 		final List<RentalFilm> rentalFilms = new ArrayList<>();
-		for(Map.Entry<Film, Long> entry : films.entrySet()) {
+		for(final Map.Entry<Film, Long> entry : films.entrySet()) {
 			final Film film = entry.getKey();
 			final Long numOfDaysToRent = entry.getValue();
 			
@@ -115,17 +119,17 @@ public class RentService {
 	
 	@Transactional
 	public Optional<PriceDto> checkOut(final String rentId, final Set<String> filmIds) {
-		Optional<Rental> rentalOpt = rentRepository.findById(rentId);
-		if (!rentalOpt.isPresent()) {
-			return Optional.empty();
+		final Rental rental = rentRepository.findById(rentId)
+				.orElseThrow(ResourceNotFoundException::new);
+
+		if (filmIds == null || filmIds.isEmpty()) {
+			throw new CheckOutException();
 		}
-		
-		final Rental rental = rentalOpt.get();
-		
+
 		if (isReturnedSameDay(rental.getCreatedDate())) {
 			rental.updateRentalStatusToReturnedForFilms(filmIds);
 			
-			final PriceDto priceSubcharged = new PriceDto(new BigDecimal(0L), rental.getActualPrice().getCurrencySymbol());
+			final PriceDto priceSubcharged = new PriceDto(BigDecimal.ZERO, rental.getActualPrice().getCurrencySymbol());
 			return Optional.of(priceSubcharged);
 		}
 		
@@ -174,8 +178,7 @@ public class RentService {
 
 			@Override
 			public Sort getSort() {
-				return pageable.getSortOr(Sort.by(Direction.DESC, "updatedDate")); // FIXME: use metadata instead of
-																					// string
+				return pageable.getSortOr(Sort.by(Direction.DESC, "updatedDate"));
 			}
 
 			@Override
@@ -200,12 +203,18 @@ public class RentService {
 		};
 	}
 
-	public Optional<RentResource> findOne(String id) {
-		return rentRepository.findById(id) //
-				.map(rentResourceAssembler::toResource);
+	@Transactional(readOnly = true)
+	public RentResource findOne(final String id) {
+		final Rental rental = rentRepository.findById(id)
+				.orElseThrow(ResourceNotFoundException::new);
+
+		return rentResourceAssembler.toResource(rental);
 	}
 
 	public void deleteOne(final String id) {
+		if (!rentRepository.existsById(id)) {
+			throw new ResourceNotFoundException();
+		}
 		rentRepository.deleteById(id);
 	}
 }

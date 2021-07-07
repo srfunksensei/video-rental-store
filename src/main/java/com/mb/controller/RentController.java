@@ -1,5 +1,6 @@
 package com.mb.controller;
 
+import java.net.URI;
 import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
@@ -37,9 +38,7 @@ public class RentController {
 
 	@PostMapping(value = "/checkIn")
 	public ResponseEntity<RentResource> checkIn(@RequestBody CheckInDto rent) {
-		return rentService.checkIn(rent)
-				.map(r -> new ResponseEntity<>(r, HttpStatus.CREATED))
-				.orElse(ResponseEntity.badRequest().build());
+		return ResponseEntity.created(URI.create("")).body(rentService.checkIn(rent));
 	}
 
 	@PutMapping(value = "/checkOut/{rentId}")
@@ -56,9 +55,7 @@ public class RentController {
 
 	@GetMapping(value = "/{rentId}")
 	public ResponseEntity<RentResource> findOne(@PathVariable String rentId) {
-		return rentService.findOne(rentId) //
-				.map(ResponseEntity::ok) //
-				.orElse(ResponseEntity.notFound().build());
+		return ResponseEntity.ok(rentService.findOne(rentId));
 	}
 
 	@DeleteMapping(value = "/{rentId}")
