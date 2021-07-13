@@ -14,7 +14,7 @@ public class CustomerResourceAssemblerSupport extends ResourceAssemblerSupport<C
 	}
 	
 	@Override
-	public CustomerResource toResource(Customer entity) {
+	public CustomerResource toResource(final Customer entity) {
 		final CustomerResource resource = createResourceWithId(entity.getId(), entity);
 		resource.setCustomerId(entity.getId());
 		resource.setFirstName(entity.getFirstName());
