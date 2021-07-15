@@ -1,15 +1,14 @@
 package com.mb.assembler.resource.rent;
 
-import java.util.stream.Collectors;
-
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
-import org.springframework.stereotype.Component;
-
 import com.mb.assembler.resource.film.FilmResourceAssemblerSupport;
 import com.mb.controller.RentController;
 import com.mb.dto.PriceDto;
 import com.mb.model.price.Price;
 import com.mb.model.rental.Rental;
+import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 @Component
 public class RentResourceAssemblerSupport extends ResourceAssemblerSupport<Rental, RentResource> {
@@ -22,8 +21,8 @@ public class RentResourceAssemblerSupport extends ResourceAssemblerSupport<Renta
 	}
 	
 	@Override
-	public RentResource toResource(Rental entity) {
-		RentResource resource = createResourceWithId(entity.getId(), entity);
+	public RentResource toResource(final Rental entity) {
+		final RentResource resource = createResourceWithId(entity.getId(), entity);
 		resource.setRentId(entity.getId());
 		resource.setFilms(entity.getFilms().stream().map(filmResourceAssembler::toResource).collect(Collectors.toList()));
 		resource.setPrice(convertPrice(entity.getActualPrice()));
