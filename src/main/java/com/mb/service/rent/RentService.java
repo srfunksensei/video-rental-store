@@ -1,31 +1,13 @@
 package com.mb.service.rent;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import com.mb.exception.CheckInException;
-import com.mb.exception.CheckOutException;
-import com.mb.exception.ResourceNotFoundException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.stereotype.Service;
-
-import com.mb.assembler.resource.rent.RentResource;
+import com.mb.assembler.resource.rent.RentModel;
 import com.mb.assembler.resource.rent.RentResourceAssemblerSupport;
 import com.mb.dto.CheckInDto;
 import com.mb.dto.CheckInItemDto;
 import com.mb.dto.PriceDto;
+import com.mb.exception.CheckInException;
+import com.mb.exception.CheckOutException;
+import com.mb.exception.ResourceNotFoundException;
 import com.mb.model.customer.Customer;
 import com.mb.model.film.Film;
 import com.mb.model.price.Price;
@@ -36,9 +18,21 @@ import com.mb.repository.customer.CustomerRepository;
 import com.mb.repository.film.FilmRepository;
 import com.mb.repository.rent.RentRepository;
 import com.mb.repository.rent.RentalFilmRepository;
-
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -54,7 +48,7 @@ public class RentService {
 	private final RentResourceAssemblerSupport rentResourceAssembler;
 	private final PagedResourcesAssembler<Rental> pagedAssembler;
 
-	public RentResource calculate(final CheckInDto rent) {
+	public RentModel calculate(final CheckInDto rent) {
 		final Set<CheckInItemDto> rentItems = rent.getItems();
 		
 		final Set<Film> films = getFilms(rentItems);
@@ -67,7 +61,7 @@ public class RentService {
 	}
 
 	@Transactional
-	public RentResource checkIn(final CheckInDto rent) {
+	public RentModel checkIn(final CheckInDto rent) {
 		final Customer customer = customerRepository.findById(rent.getCustomerId())
 				.orElseThrow(ResourceNotFoundException::new);
 
@@ -75,17 +69,17 @@ public class RentService {
 			throw new CheckInException();
 		}
 
-		final RentResource rentResource = calculate(rent);
-		final PriceDto rentPrice = rentResource.getPrice();
+		final RentModel rentModel = calculate(rent);
+		final PriceDto rentPrice = rentModel.getPrice();
 
 		final Map<Film, Long> filmsWithDaysToRent = getFilmsWithDaysToRent(rent.getItems());
 		
 		final Rental rental = createRental(customer, rentPrice, filmsWithDaysToRent);
 
-		rentResource.setRentId(rental.getId());
-		rentResource.setStatus(rental.getStatus());
+		rentModel.setRentId(rental.getId());
+		rentModel.setStatus(rental.getStatus());
 
-		return rentResource;
+		return rentModel;
 	}
 	
 	private Map<Film, Long> getFilmsWithDaysToRent(final Set<CheckInItemDto> rentItems) {
@@ -151,11 +145,11 @@ public class RentService {
 		return ChronoUnit.DAYS.between(date, LocalDate.now()) == 0;
 	}
 	
-	public PagedResources<RentResource> findAll(final Pageable pageable) {
+	public PagedModel<RentModel> findAll(final Pageable pageable) {
 		final Pageable defaultPageable = getDefaultPageable(pageable);
 
 		final Page<Rental> rentals = rentRepository.findAll(defaultPageable);
-		return pagedAssembler.toResource(rentals, rentResourceAssembler);
+		return pagedAssembler.toModel(rentals, rentResourceAssembler);
 	}
 
 	private Pageable getDefaultPageable(final Pageable pageable) {
@@ -204,11 +198,11 @@ public class RentService {
 	}
 
 	@Transactional(readOnly = true)
-	public RentResource findOne(final String id) {
+	public RentModel findOne(final String id) {
 		final Rental rental = rentRepository.findById(id)
 				.orElseThrow(ResourceNotFoundException::new);
 
-		return rentResourceAssembler.toResource(rental);
+		return rentResourceAssembler.toModel(rental);
 	}
 
 	public void deleteOne(final String id) {

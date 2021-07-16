@@ -1,24 +1,24 @@
 package com.mb.service.customer;
 
-import com.mb.assembler.resource.customer.CustomerResource;
+import com.mb.assembler.resource.customer.CustomerModel;
 import com.mb.exception.ResourceNotFoundException;
 import com.mb.model.customer.Customer;
 import com.mb.repository.customer.CustomerRepository;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class CustomerServiceTest {
 
     @MockBean
@@ -32,22 +32,22 @@ public class CustomerServiceTest {
         final Customer dummyCustomer = buildDummyCustomer();
         when(customerRepository.findById(anyString())).thenReturn(Optional.of(dummyCustomer));
 
-        final Optional<CustomerResource> resultOpt = customerService.findOne("id");
-        Assert.assertTrue(resultOpt.isPresent());
+        final Optional<CustomerModel> resultOpt = customerService.findOne("id");
+        Assertions.assertTrue(resultOpt.isPresent());
 
-        final CustomerResource customerResource = resultOpt.get();
-        Assert.assertEquals(dummyCustomer.getId(), customerResource.getCustomerId());
-        Assert.assertEquals(dummyCustomer.getFirstName(), customerResource.getFirstName());
-        Assert.assertEquals(dummyCustomer.getLastName(), customerResource.getLastName());
-        Assert.assertEquals(dummyCustomer.getBonusPoints(), customerResource.getBonusPoints());
+        final CustomerModel customerModel = resultOpt.get();
+        Assertions.assertEquals(dummyCustomer.getId(), customerModel.getCustomerId());
+        Assertions.assertEquals(dummyCustomer.getFirstName(), customerModel.getFirstName());
+        Assertions.assertEquals(dummyCustomer.getLastName(), customerModel.getLastName());
+        Assertions.assertEquals(dummyCustomer.getBonusPoints(), customerModel.getBonusPoints());
     }
 
     @Test
     public void findOne_notFound() {
         when(customerRepository.findById(anyString())).thenReturn(Optional.empty());
 
-        final Optional<CustomerResource> resultOpt = customerService.findOne("id");
-        Assert.assertFalse(resultOpt.isPresent());
+        final Optional<CustomerModel> resultOpt = customerService.findOne("id");
+        Assertions.assertFalse(resultOpt.isPresent());
     }
 
     @Test
@@ -58,11 +58,11 @@ public class CustomerServiceTest {
         verify(customerRepository, times(1)).deleteById(anyString());
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void deleteOne_notFound() {
         when(customerRepository.existsById(anyString())).thenReturn(false);
 
-        customerService.deleteOne("id");
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> customerService.deleteOne("id"));
     }
 
     private Customer buildDummyCustomer() {

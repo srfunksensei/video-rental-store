@@ -1,6 +1,6 @@
 package com.mb.service.film;
 
-import com.mb.assembler.resource.film.FilmResource;
+import com.mb.assembler.resource.film.FilmModel;
 import com.mb.assembler.resource.film.FilmResourceAssemblerSupport;
 import com.mb.dto.SearchFilmDto;
 import com.mb.model.film.Film;
@@ -14,7 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -28,12 +28,12 @@ public class FilmService {
 	private final FilmResourceAssemblerSupport filmResourceAssembler;
 	private final PagedResourcesAssembler<Film> pagedAssembler;
 	
-	public Optional<FilmResource> findOne(final String filmId) {
+	public Optional<FilmModel> findOne(final String filmId) {
 		return filmRepository.findById(filmId) //
-				.map(filmResourceAssembler::toResource);
+				.map(filmResourceAssembler::toModel);
 	}
 
-	public PagedResources<FilmResource> findAll(final SearchFilmDto searchFilmDto, final Pageable pageable) {
+	public PagedModel<FilmModel> findAll(final SearchFilmDto searchFilmDto, final Pageable pageable) {
 		Specification<Film> spec = null;
 		if (searchFilmDto != null) {
 			spec = GenericQuerySpecs.all();
@@ -43,18 +43,18 @@ public class FilmService {
 		}
 
 		final Page<Film> films = filmRepository.findAll(spec, pageable);
-		return pagedAssembler.toResource(films, filmResourceAssembler);
+		return pagedAssembler.toModel(films, filmResourceAssembler);
 	}
 
-	public PagedResources<FilmResource> findAll( //
-			final Optional<String> title, final Optional<FilmType> type, //
-			 final Pageable pageable) {
+	public PagedModel<FilmModel> findAll( //
+                                              final Optional<String> title, final Optional<FilmType> type, //
+                                              final Pageable pageable) {
 		
 		final FilmSpecificationsBuilder builder = new FilmSpecificationsBuilder();
 		title.ifPresent(s -> builder.with(FilmSpecificationsBuilder.TITLE_SEARCH_KEY, s));
 		type.ifPresent(filmType -> builder.with(FilmSpecificationsBuilder.TYPE_SEARCH_KEY, filmType.name()));
 
 		final Page<Film> films = filmRepository.findAll(builder.build(), pageable);
-		return pagedAssembler.toResource(films, filmResourceAssembler);
+		return pagedAssembler.toModel(films, filmResourceAssembler);
 	}
 }

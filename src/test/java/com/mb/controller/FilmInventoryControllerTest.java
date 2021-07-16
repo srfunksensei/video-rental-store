@@ -1,20 +1,22 @@
 package com.mb.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.mb.assembler.resource.film.FilmResource;
+import com.mb.assembler.resource.film.FilmModel;
 import com.mb.assembler.resource.film.FilmResourceAssemblerSupport;
 import com.mb.dto.SearchFilmDto;
 import com.mb.model.film.Film;
 import com.mb.model.film.FilmType;
 import com.mb.service.film.FilmService;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Optional;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ExtendWith(MockitoExtension.class)
 public class FilmInventoryControllerTest extends AbstractMockMvcTest {
 
     @MockBean
@@ -53,13 +56,13 @@ public class FilmInventoryControllerTest extends AbstractMockMvcTest {
     public void findOne() throws Exception {
         final String filmId = "film-id";
 
-        final FilmResource filmResource = new FilmResource();
-        filmResource.setFilmId(filmId);
-        filmResource.setTitle("title");
-        filmResource.setType(FilmType.NEW);
-        filmResource.setYear(2021);
+        final FilmModel filmModel = new FilmModel();
+        filmModel.setFilmId(filmId);
+        filmModel.setTitle("title");
+        filmModel.setType(FilmType.NEW);
+        filmModel.setYear(2021);
 
-        when(filmService.findOne(filmId)).thenReturn(Optional.of(filmResource));
+        when(filmService.findOne(filmId)).thenReturn(Optional.of(filmModel));
 
         final MvcResult mvcResult = mvc.perform(
                 get("/films/{id}", filmId))
@@ -67,10 +70,10 @@ public class FilmInventoryControllerTest extends AbstractMockMvcTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        final FilmResource result = parseResponse(mvcResult, new TypeReference<FilmResource>() {
+        final FilmModel result = parseResponse(mvcResult, new TypeReference<FilmModel>() {
         });
-        Assert.assertNotNull(result);
-        Assert.assertEquals(filmResource, result);
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(filmModel, result);
     }
 
     @Test
@@ -81,7 +84,7 @@ public class FilmInventoryControllerTest extends AbstractMockMvcTest {
                 .build();
 
         final Page<Film> films = Page.empty();
-        final PagedResources<FilmResource> filmResources = pagedAssembler.toResource(films, filmResourceAssembler);
+        final PagedModel<FilmModel> filmResources = pagedAssembler.toModel(films, filmResourceAssembler);
         when(filmService.findAll(eq(searchFilmDto), any(Pageable.class))).thenReturn(filmResources);
 
         final MvcResult mvcResult = mvc.perform(
@@ -91,8 +94,8 @@ public class FilmInventoryControllerTest extends AbstractMockMvcTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        final PagedResources<FilmResource> result = parseResponse(mvcResult, new TypeReference<PagedResources<FilmResource>>() {
+        final PagedModel<FilmModel> result = parseResponse(mvcResult, new TypeReference<PagedModel<FilmModel>>() {
         });
-        Assert.assertEquals(0, result.getContent().size());
+        Assertions.assertEquals(0, result.getContent().size());
     }
 }

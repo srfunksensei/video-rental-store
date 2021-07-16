@@ -1,14 +1,11 @@
 package com.mb.assembler.resource.customer;
 
 import com.mb.model.customer.Customer;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class CustomerResourceAssemblerSupportTest {
 
@@ -16,7 +13,7 @@ public class CustomerResourceAssemblerSupportTest {
     private CustomerResourceAssemblerSupport customerResourceAssemblerSupport;
 
     @Test
-    public void toResource() {
+    public void toModel() {
         final Customer customer = new Customer();
         customer.setId("id");
         customer.setFirstName("firstName");
@@ -24,12 +21,12 @@ public class CustomerResourceAssemblerSupportTest {
         customer.setUsername("username");
         customer.setBonusPoints(1L);
 
-        final CustomerResource result = customerResourceAssemblerSupport.toResource(customer);
-        Assert.assertEquals(customer.getId(), result.getCustomerId());
-        Assert.assertEquals(customer.getFirstName(), result.getFirstName());
-        Assert.assertEquals(customer.getLastName(), result.getLastName());
-        Assert.assertEquals(customer.getUsername(), result.getUsername());
-        Assert.assertEquals(customer.getBonusPoints(), result.getBonusPoints());
+        final CustomerModel result = customerResourceAssemblerSupport.toModel(customer);
+        Assertions.assertEquals(customer.getId(), result.getCustomerId());
+        Assertions.assertEquals(customer.getFirstName(), result.getFirstName());
+        Assertions.assertEquals(customer.getLastName(), result.getLastName());
+        Assertions.assertEquals(customer.getUsername(), result.getUsername());
+        Assertions.assertEquals(customer.getBonusPoints(), result.getBonusPoints());
 
     }
 }

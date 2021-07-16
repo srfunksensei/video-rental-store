@@ -1,24 +1,22 @@
 package com.mb.service.customer;
 
-import java.util.Optional;
-
+import com.mb.assembler.resource.customer.CustomerModel;
+import com.mb.assembler.resource.customer.CustomerResourceAssemblerSupport;
 import com.mb.dto.SearchCustomerDto;
 import com.mb.exception.ResourceNotFoundException;
+import com.mb.model.customer.Customer;
 import com.mb.model.customer.Customer_;
 import com.mb.repository.GenericQuerySpecs;
+import com.mb.repository.customer.CustomerRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
-import com.mb.assembler.resource.customer.CustomerResource;
-import com.mb.assembler.resource.customer.CustomerResourceAssemblerSupport;
-import com.mb.model.customer.Customer;
-import com.mb.repository.customer.CustomerRepository;
-
-import lombok.AllArgsConstructor;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -29,9 +27,9 @@ public class CustomerService {
 	private final CustomerResourceAssemblerSupport customerResourceAssembler;
 	private final PagedResourcesAssembler<Customer> pagedAssembler;
 
-	public Optional<CustomerResource> findOne(final String customerId) {
+	public Optional<CustomerModel> findOne(final String customerId) {
 		return customerRepository.findById(customerId) //
-				.map(customerResourceAssembler::toResource);
+				.map(customerResourceAssembler::toModel);
 	}
 
 	public void deleteOne(final String customerId) {
@@ -42,7 +40,7 @@ public class CustomerService {
 		}
 	}
 
-	public PagedResources<CustomerResource> findAll(final SearchCustomerDto searchCustomerDto, final Pageable pageable) {
+	public PagedModel<CustomerModel> findAll(final SearchCustomerDto searchCustomerDto, final Pageable pageable) {
 		Specification<Customer> spec = null;
 		if (searchCustomerDto != null) {
 			spec = GenericQuerySpecs.all();
@@ -53,6 +51,6 @@ public class CustomerService {
 		}
 
 		final Page<Customer> customers = customerRepository.findAll(spec, pageable);
-		return pagedAssembler.toResource(customers, customerResourceAssembler);
+		return pagedAssembler.toModel(customers, customerResourceAssembler);
 	}
 }

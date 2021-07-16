@@ -1,6 +1,6 @@
 package com.mb.service.rent;
 
-import com.mb.assembler.resource.rent.RentResource;
+import com.mb.assembler.resource.rent.RentModel;
 import com.mb.dto.CheckInDto;
 import com.mb.dto.CheckInItemDto;
 import com.mb.dto.PriceDto;
@@ -17,13 +17,11 @@ import com.mb.model.rental.RentalStatus;
 import com.mb.repository.customer.CustomerRepository;
 import com.mb.repository.film.FilmRepository;
 import com.mb.repository.rent.RentRepository;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -34,7 +32,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class RentServiceTest {
 
@@ -50,7 +47,7 @@ public class RentServiceTest {
     @Autowired
     private FilmRepository filmRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         customerRepository.deleteAll();
         customerRepository.flush();
@@ -63,12 +60,12 @@ public class RentServiceTest {
     @Test
     public void calculate_noItemsReturned() {
         final CheckInDto checkInDto = new CheckInDto("customerId", new HashSet<>());
-        final RentResource result = rentService.calculate(checkInDto);
-        Assert.assertNotNull(result);
-        Assert.assertNull(result.getFilms());
-        Assert.assertNull(result.getStatus());
-        Assert.assertNotNull(result.getPrice());
-        Assert.assertNull(result.getRentId());
+        final RentModel result = rentService.calculate(checkInDto);
+        Assertions.assertNotNull(result);
+        Assertions.assertNull(result.getFilms());
+        Assertions.assertNull(result.getStatus());
+        Assertions.assertNotNull(result.getPrice());
+        Assertions.assertNull(result.getRentId());
     }
 
     @Test
@@ -82,30 +79,30 @@ public class RentServiceTest {
         items.add(checkInItemDto);
 
         final CheckInDto checkInDto = new CheckInDto("customerId", items);
-        final RentResource result = rentService.calculate(checkInDto);
-        Assert.assertNotNull(result);
-        Assert.assertNotNull(result.getFilms());
-        Assert.assertFalse(result.getFilms().isEmpty());
-        Assert.assertEquals(1, result.getFilms().size());
-        Assert.assertNotNull(result.getPrice());
-        Assert.assertEquals(new BigDecimal(40).setScale(2, RoundingMode.HALF_UP), result.getPrice().getValue());
-        Assert.assertEquals("SEK", result.getPrice().getCurrency());
+        final RentModel result = rentService.calculate(checkInDto);
+        Assertions.assertNotNull(result);
+        Assertions.assertNotNull(result.getFilms());
+        Assertions.assertFalse(result.getFilms().isEmpty());
+        Assertions.assertEquals(1, result.getFilms().size());
+        Assertions.assertNotNull(result.getPrice());
+        Assertions.assertEquals(new BigDecimal(40).setScale(2, RoundingMode.HALF_UP), result.getPrice().getValue());
+        Assertions.assertEquals("SEK", result.getPrice().getCurrency());
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void checkIn_customerDoesNotExist() {
         final CheckInDto checkInDto = new CheckInDto("not-existing-customer-id", new HashSet<>());
 
-        rentService.checkIn(checkInDto);
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> rentService.checkIn(checkInDto));
     }
 
-    @Test(expected = CheckInException.class)
+    @Test
     public void checkIn_noItems() {
         final Customer customer = customerRepository.save(new Customer("first", "last", "username", 1L));
 
         final CheckInDto checkInDto = new CheckInDto(customer.getId(), new HashSet<>());
 
-        rentService.checkIn(checkInDto);
+        Assertions.assertThrows(CheckInException.class, () -> rentService.checkIn(checkInDto));
     }
 
     @Test
@@ -122,28 +119,28 @@ public class RentServiceTest {
 
         final CheckInDto checkInDto = new CheckInDto(customer.getId(), items);
 
-        final RentResource result = rentService.checkIn(checkInDto);
-        Assert.assertNotNull(result);
-        Assert.assertNotNull(result.getRentId());
-        Assert.assertNotNull(result.getStatus());
-        Assert.assertEquals(RentalStatus.RENTED, result.getStatus());
-        Assert.assertNotNull(result.getFilms());
-        Assert.assertFalse(result.getFilms().isEmpty());
-        Assert.assertEquals(1, result.getFilms().size());
-        Assert.assertNotNull(result.getPrice());
-        Assert.assertEquals(new BigDecimal(40).setScale(2, RoundingMode.HALF_UP), result.getPrice().getValue());
-        Assert.assertEquals("SEK", result.getPrice().getCurrency());
+        final RentModel result = rentService.checkIn(checkInDto);
+        Assertions.assertNotNull(result);
+        Assertions.assertNotNull(result.getRentId());
+        Assertions.assertNotNull(result.getStatus());
+        Assertions.assertEquals(RentalStatus.RENTED, result.getStatus());
+        Assertions.assertNotNull(result.getFilms());
+        Assertions.assertFalse(result.getFilms().isEmpty());
+        Assertions.assertEquals(1, result.getFilms().size());
+        Assertions.assertNotNull(result.getPrice());
+        Assertions.assertEquals(new BigDecimal(40).setScale(2, RoundingMode.HALF_UP), result.getPrice().getValue());
+        Assertions.assertEquals("SEK", result.getPrice().getCurrency());
 
         final List<Rental> rentals = rentRepository.findAll();
-        Assert.assertEquals(1, rentals.size());
+        Assertions.assertEquals(1, rentals.size());
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void checkOut_notExistingRentId() {
-        rentService.checkOut("not-existing-rent-id", new HashSet<>());
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> rentService.checkOut("not-existing-rent-id", new HashSet<>()));
     }
 
-    @Test(expected = CheckOutException.class)
+    @Test
     public void checkOut_noFilmsReturned() {
         final Customer customer = customerRepository.save(new Customer("first", "last", "username", 1L));
 
@@ -151,7 +148,7 @@ public class RentServiceTest {
         final Rental rental = new Rental(rentalPrice, customer);
         final Rental saved = rentRepository.save(rental);
 
-        rentService.checkOut(saved.getId(), new HashSet<>());
+        Assertions.assertThrows(CheckOutException.class, () -> rentService.checkOut(saved.getId(), new HashSet<>()));
     }
 
     @Test
@@ -168,14 +165,14 @@ public class RentServiceTest {
 
         final CheckInDto checkInDto = new CheckInDto(customer.getId(), items);
 
-        final RentResource checkIn = rentService.checkIn(checkInDto);
+        final RentModel checkIn = rentService.checkIn(checkInDto);
 
         final Optional<PriceDto> resultOpt = rentService.checkOut(checkIn.getRentId(), Stream.of(save.getId()).collect(Collectors.toSet()));
-        Assert.assertTrue(resultOpt.isPresent());
+        Assertions.assertTrue(resultOpt.isPresent());
 
         final PriceDto priceDto = resultOpt.get();
-        Assert.assertEquals(BigDecimal.ZERO, priceDto.getValue());
-        Assert.assertEquals("SEK", priceDto.getCurrency());
+        Assertions.assertEquals(BigDecimal.ZERO, priceDto.getValue());
+        Assertions.assertEquals("SEK", priceDto.getCurrency());
     }
 
     @Test
@@ -186,13 +183,13 @@ public class RentServiceTest {
         final Rental rental = new Rental(rentalPrice, customer);
         final Rental saved = rentRepository.save(rental);
 
-        final RentResource result = rentService.findOne(saved.getId());
-        Assert.assertNotNull(result);
+        final RentModel result = rentService.findOne(saved.getId());
+        Assertions.assertNotNull(result);
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void findOne_notFound() {
-        rentService.findOne("not-existing-id");
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> rentService.findOne("not-existing-id"));
     }
 
     @Test
@@ -206,9 +203,9 @@ public class RentServiceTest {
         rentService.deleteOne(saved.getId());
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    public void deleteOne_notFoud() {
-        rentService.deleteOne("not-existing-id");
+    @Test
+    public void deleteOne_notFound() {
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> rentService.deleteOne("not-existing-id"));
     }
 
     private Film buildDummyFilm() {

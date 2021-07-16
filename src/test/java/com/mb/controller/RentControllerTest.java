@@ -1,7 +1,7 @@
 package com.mb.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.mb.assembler.resource.rent.RentResource;
+import com.mb.assembler.resource.rent.RentModel;
 import com.mb.assembler.resource.rent.RentResourceAssemblerSupport;
 import com.mb.dto.CheckInDto;
 import com.mb.dto.CheckInItemDto;
@@ -12,14 +12,16 @@ import com.mb.exception.ResourceNotFoundException;
 import com.mb.model.rental.Rental;
 import com.mb.model.rental.RentalStatus;
 import com.mb.service.rent.RentService;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -33,6 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ExtendWith(MockitoExtension.class)
 public class RentControllerTest extends AbstractMockMvcTest {
 
     @MockBean
@@ -60,13 +63,13 @@ public class RentControllerTest extends AbstractMockMvcTest {
     public void findOne() throws Exception {
         final String rentId = "rent-id";
 
-        final RentResource rentResource = new RentResource();
-        rentResource.setRentId(rentId);
-        rentResource.setFilms(new ArrayList<>());
-        rentResource.setStatus(RentalStatus.RETURNED);
-        rentResource.setPrice(new PriceDto(BigDecimal.TEN, "SEK"));
+        final RentModel rentModel = new RentModel();
+        rentModel.setRentId(rentId);
+        rentModel.setFilms(new ArrayList<>());
+        rentModel.setStatus(RentalStatus.RETURNED);
+        rentModel.setPrice(new PriceDto(BigDecimal.TEN, "SEK"));
 
-        when(rentService.findOne(rentId)).thenReturn(rentResource);
+        when(rentService.findOne(rentId)).thenReturn(rentModel);
 
         final MvcResult mvcResult = mvc.perform(
                 get("/rents/{id}", rentId))
@@ -74,10 +77,10 @@ public class RentControllerTest extends AbstractMockMvcTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        final RentResource result = parseResponse(mvcResult, new TypeReference<RentResource>() {
+        final RentModel result = parseResponse(mvcResult, new TypeReference<RentModel>() {
         });
-        Assert.assertNotNull(result);
-        Assert.assertEquals(rentResource, result);
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(rentModel, result);
     }
 
     @Test
@@ -107,7 +110,7 @@ public class RentControllerTest extends AbstractMockMvcTest {
     @Test
     public void findAll() throws Exception {
         final Page<Rental> rents = Page.empty();
-        final PagedResources<RentResource> rentResources = pagedAssembler.toResource(rents, rentResourceAssemblerSupport);
+        final PagedModel<RentModel> rentResources = pagedAssembler.toModel(rents, rentResourceAssemblerSupport);
         when(rentService.findAll(any(Pageable.class))).thenReturn(rentResources);
 
         final MvcResult mvcResult = mvc.perform(
@@ -116,16 +119,16 @@ public class RentControllerTest extends AbstractMockMvcTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        final PagedResources<RentResource> result = parseResponse(mvcResult, new TypeReference<PagedResources<RentResource>>() {
+        final PagedModel<RentModel> result = parseResponse(mvcResult, new TypeReference<PagedModel<RentModel>>() {
         });
 
-        Assert.assertEquals(0, result.getContent().size());
+        Assertions.assertEquals(0, result.getContent().size());
     }
 
     @Test
     public void calculate_noItems() throws Exception {
         final CheckInDto checkInDto = new CheckInDto("customerId", new HashSet<>());
-        final RentResource toReturn = new RentResource();
+        final RentModel toReturn = new RentModel();
         toReturn.setFilms(new ArrayList<>());
         toReturn.setPrice(new PriceDto(new BigDecimal(40), "SEK"));
 
@@ -139,9 +142,9 @@ public class RentControllerTest extends AbstractMockMvcTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        final RentResource result = parseResponse(mvcResult, new TypeReference<RentResource>() {
+        final RentModel result = parseResponse(mvcResult, new TypeReference<RentModel>() {
         });
-        Assert.assertEquals(toReturn, result);
+        Assertions.assertEquals(toReturn, result);
     }
 
     @Test
@@ -181,7 +184,7 @@ public class RentControllerTest extends AbstractMockMvcTest {
 
         final CheckInDto checkInDto = new CheckInDto("customer-id", items);
 
-        final RentResource toReturn = new RentResource();
+        final RentModel toReturn = new RentModel();
         toReturn.setRentId(UUID.randomUUID().toString());
         toReturn.setStatus(RentalStatus.RENTED);
         toReturn.setFilms(new ArrayList<>());
@@ -197,9 +200,9 @@ public class RentControllerTest extends AbstractMockMvcTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        final RentResource result = parseResponse(mvcResult, new TypeReference<RentResource>() {
+        final RentModel result = parseResponse(mvcResult, new TypeReference<RentModel>() {
         });
-        Assert.assertEquals(toReturn, result);
+        Assertions.assertEquals(toReturn, result);
     }
 
     @Test
@@ -245,6 +248,6 @@ public class RentControllerTest extends AbstractMockMvcTest {
 
         final PriceDto result = parseResponse(mvcResult, new TypeReference<PriceDto>() {
         });
-        Assert.assertEquals(priceDto, result);
+        Assertions.assertEquals(priceDto, result);
     }
 }

@@ -4,13 +4,13 @@ import com.mb.dto.PriceDto;
 import com.mb.exception.InvalidDataException;
 import com.mb.model.price.PremiumPrice;
 import com.mb.repository.price.PremiumPriceRepository;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -18,8 +18,8 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class NewReleaseFilmPriceCalculatorTest {
 
     @MockBean
@@ -28,9 +28,9 @@ public class NewReleaseFilmPriceCalculatorTest {
     @Autowired
     public NewReleaseFilmPriceCalculator newReleaseFilmPriceCalculator;
 
-    @Test(expected = InvalidDataException.class)
+    @Test
     public void calculatePrice_negativeDays() {
-        newReleaseFilmPriceCalculator.calculatePrice(-1L);
+        Assertions.assertThrows(InvalidDataException.class, () -> newReleaseFilmPriceCalculator.calculatePrice(-1L));
     }
 
     @Test
@@ -44,7 +44,7 @@ public class NewReleaseFilmPriceCalculatorTest {
 
         final PriceDto priceDto = newReleaseFilmPriceCalculator.calculatePrice(0L);
 
-        Assert.assertEquals(BigDecimal.ZERO, priceDto.getValue());
+        Assertions.assertEquals(BigDecimal.ZERO, priceDto.getValue());
     }
 
     @Test
@@ -58,6 +58,6 @@ public class NewReleaseFilmPriceCalculatorTest {
 
         final PriceDto priceDto = newReleaseFilmPriceCalculator.calculatePrice(1L);
 
-        Assert.assertEquals(price.getValue(), priceDto.getValue());
+        Assertions.assertEquals(price.getValue(), priceDto.getValue());
     }
 }

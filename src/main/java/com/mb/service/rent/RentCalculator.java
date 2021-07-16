@@ -1,18 +1,7 @@
 package com.mb.service.rent;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Component;
-
 import com.mb.assembler.resource.film.FilmResourceAssemblerSupport;
-import com.mb.assembler.resource.rent.RentResource;
+import com.mb.assembler.resource.rent.RentModel;
 import com.mb.dto.CheckInItemDto;
 import com.mb.dto.PriceDto;
 import com.mb.model.film.Film;
@@ -24,9 +13,13 @@ import com.mb.service.rent.calculation.FilmCalculationStrategy;
 import com.mb.service.rent.calculation.NewReleaseFilmPriceCalculator;
 import com.mb.service.rent.calculation.OldFilmPriceCalculator;
 import com.mb.service.rent.calculation.RegularFilmPriceCalculator;
-
 import lombok.AllArgsConstructor;
-import org.springframework.util.Assert;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -38,16 +31,14 @@ public class RentCalculator {
 	private final RegularFilmPriceCalculator regularFilmPriceCalculator;
 	private final NewReleaseFilmPriceCalculator newReleaseFilmPriceCalculator;
 
-	public RentResource calculate(final Set<CheckInItemDto> rentItems, final Set<Film> films) {
+	public RentModel calculate(final Set<CheckInItemDto> rentItems, final Set<Film> films) {
 		if ((rentItems == null || rentItems.isEmpty()) || (films == null || films.isEmpty())) {
-			final RentResource rentResource = new RentResource();
-			rentResource.setPrice(new PriceDto(BigDecimal.ZERO, "-"));
-			return rentResource;
+			final RentModel rentModel = new RentModel();
+			rentModel.setPrice(new PriceDto(BigDecimal.ZERO, "-"));
+			return rentModel;
 		}
 
 		final Optional<PriceDto> rentPriceOpt = getPrice(films, rentItems);
-		Assert.isTrue(rentPriceOpt.isPresent(), "Price should be present");
-
 		return createRentResource(films, rentPriceOpt.get());
 	}
 
@@ -92,11 +83,11 @@ public class RentCalculator {
 		return daysForRent.stream().map(strategy::calculatePrice).collect(Collectors.toList());
 	}
 
-	private RentResource createRentResource(final Set<Film> films, final PriceDto price) {
-		final RentResource resource = new RentResource();
+	private RentModel createRentResource(final Set<Film> films, final PriceDto price) {
+		final RentModel resource = new RentModel();
 
 		resource.setPrice(price);
-		resource.setFilms(films.stream().map(filmResourceAssembler::toResource).collect(Collectors.toList()));
+		resource.setFilms(films.stream().map(filmResourceAssembler::toModel).collect(Collectors.toList()));
 
 		return resource;
 	}

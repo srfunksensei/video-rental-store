@@ -1,17 +1,15 @@
 package com.mb.assembler.resource.film;
 
-import org.springframework.hateoas.ResourceSupport;
-
 import com.mb.model.film.FilmType;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class FilmResource extends ResourceSupport {
+public class FilmModel extends RepresentationModel<FilmModel> {
 	private String filmId;
 	private String title;
 	private int year;

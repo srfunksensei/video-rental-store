@@ -1,6 +1,6 @@
 package com.mb.service.rent;
 
-import com.mb.assembler.resource.rent.RentResource;
+import com.mb.assembler.resource.rent.RentModel;
 import com.mb.dto.CheckInItemDto;
 import com.mb.dto.PriceDto;
 import com.mb.model.film.Film;
@@ -8,12 +8,10 @@ import com.mb.model.film.FilmType;
 import com.mb.model.rental.Rental;
 import com.mb.model.rental.RentalFilm;
 import com.mb.model.rental.RentalStatus;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -26,7 +24,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class RentCalculatorTest {
 
@@ -35,28 +32,28 @@ public class RentCalculatorTest {
 
     @Test
     public void calculate_noValuePassed() {
-        RentResource result = rentCalculator.calculate(null, null);
-        Assert.assertNotNull(result);
-        Assert.assertEquals(BigDecimal.ZERO, result.getPrice().getValue());
-        Assert.assertNull(result.getFilms());
+        RentModel result = rentCalculator.calculate(null, null);
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(BigDecimal.ZERO, result.getPrice().getValue());
+        Assertions.assertNull(result.getFilms());
 
         result = rentCalculator.calculate(new HashSet<>(), null);
-        Assert.assertNotNull(result);
-        Assert.assertEquals(BigDecimal.ZERO, result.getPrice().getValue());
-        Assert.assertNull(result.getFilms());
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(BigDecimal.ZERO, result.getPrice().getValue());
+        Assertions.assertNull(result.getFilms());
 
         final CheckInItemDto checkInItemDto = new CheckInItemDto(1, UUID.randomUUID().toString());
         final Set<CheckInItemDto> checkInItemDtos = Stream.of(checkInItemDto).collect(Collectors.toSet());
 
         result = rentCalculator.calculate(checkInItemDtos, null);
-        Assert.assertNotNull(result);
-        Assert.assertEquals(BigDecimal.ZERO, result.getPrice().getValue());
-        Assert.assertNull(result.getFilms());
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(BigDecimal.ZERO, result.getPrice().getValue());
+        Assertions.assertNull(result.getFilms());
 
         result = rentCalculator.calculate(checkInItemDtos, new HashSet<>());
-        Assert.assertNotNull(result);
-        Assert.assertEquals(BigDecimal.ZERO, result.getPrice().getValue());
-        Assert.assertNull(result.getFilms());
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(BigDecimal.ZERO, result.getPrice().getValue());
+        Assertions.assertNull(result.getFilms());
     }
 
     @Test
@@ -70,10 +67,10 @@ public class RentCalculatorTest {
         final CheckInItemDto checkInItemDto = new CheckInItemDto(1, film.getId());
         final Set<CheckInItemDto> checkInItemDtos = Stream.of(checkInItemDto).collect(Collectors.toSet());
 
-        final RentResource result = rentCalculator.calculate(checkInItemDtos, films);
-        Assert.assertEquals(new BigDecimal(30).setScale(2, RoundingMode.HALF_UP), result.getPrice().getValue());
-        Assert.assertNotNull(result.getFilms());
-        Assert.assertNull(result.getStatus());
+        final RentModel result = rentCalculator.calculate(checkInItemDtos, films);
+        Assertions.assertEquals(new BigDecimal(30).setScale(2, RoundingMode.HALF_UP), result.getPrice().getValue());
+        Assertions.assertNotNull(result.getFilms());
+        Assertions.assertNull(result.getStatus());
     }
 
     @Test
@@ -87,10 +84,10 @@ public class RentCalculatorTest {
         final CheckInItemDto checkInItemDto = new CheckInItemDto(1, film.getId());
         final Set<CheckInItemDto> checkInItemDtos = Stream.of(checkInItemDto).collect(Collectors.toSet());
 
-        final RentResource result = rentCalculator.calculate(checkInItemDtos, films);
-        Assert.assertEquals(new BigDecimal(30).setScale(2, RoundingMode.HALF_UP), result.getPrice().getValue());
-        Assert.assertNotNull(result.getFilms());
-        Assert.assertNull(result.getStatus());
+        final RentModel result = rentCalculator.calculate(checkInItemDtos, films);
+        Assertions.assertEquals(new BigDecimal(30).setScale(2, RoundingMode.HALF_UP), result.getPrice().getValue());
+        Assertions.assertNotNull(result.getFilms());
+        Assertions.assertNull(result.getStatus());
     }
 
     @Test
@@ -104,10 +101,10 @@ public class RentCalculatorTest {
         final CheckInItemDto checkInItemDto = new CheckInItemDto(1, film.getId());
         final Set<CheckInItemDto> checkInItemDtos = Stream.of(checkInItemDto).collect(Collectors.toSet());
 
-        final RentResource result = rentCalculator.calculate(checkInItemDtos, films);
-        Assert.assertEquals(new BigDecimal(40).setScale(2, RoundingMode.HALF_UP), result.getPrice().getValue());
-        Assert.assertNotNull(result.getFilms());
-        Assert.assertNull(result.getStatus());
+        final RentModel result = rentCalculator.calculate(checkInItemDtos, films);
+        Assertions.assertEquals(new BigDecimal(40).setScale(2, RoundingMode.HALF_UP), result.getPrice().getValue());
+        Assertions.assertNotNull(result.getFilms());
+        Assertions.assertNull(result.getStatus());
     }
 
     @Test
@@ -134,22 +131,22 @@ public class RentCalculatorTest {
                 checkInItemNewDto = new CheckInItemDto(1, newFilm.getId());
         final Set<CheckInItemDto> checkInItemDtos = Stream.of(checkInItemOldDto, checkInItemRegularDto, checkInItemNewDto).collect(Collectors.toSet());
 
-        final RentResource result = rentCalculator.calculate(checkInItemDtos, films);
-        Assert.assertEquals(new BigDecimal(100).setScale(2, RoundingMode.HALF_UP), result.getPrice().getValue());
-        Assert.assertNotNull(result.getFilms());
-        Assert.assertNull(result.getStatus());
+        final RentModel result = rentCalculator.calculate(checkInItemDtos, films);
+        Assertions.assertEquals(new BigDecimal(100).setScale(2, RoundingMode.HALF_UP), result.getPrice().getValue());
+        Assertions.assertNotNull(result.getFilms());
+        Assertions.assertNull(result.getStatus());
     }
 
     @Test
     public void calculateCheckOutTotal_noValuePassed() {
         Optional<PriceDto> result = rentCalculator.calculateCheckOutTotal(null, null);
-        Assert.assertFalse(result.isPresent());
+        Assertions.assertFalse(result.isPresent());
 
         result = rentCalculator.calculateCheckOutTotal(new Rental(), null);
-        Assert.assertFalse(result.isPresent());
+        Assertions.assertFalse(result.isPresent());
 
         result = rentCalculator.calculateCheckOutTotal(new Rental(), new HashSet<>());
-        Assert.assertFalse(result.isPresent());
+        Assertions.assertFalse(result.isPresent());
     }
 
     @Test
@@ -183,10 +180,10 @@ public class RentCalculatorTest {
         rental.addRentalFilm(newRentalFilm);
 
         final Optional<PriceDto> resultOpt = rentCalculator.calculateCheckOutTotal(rental, filmIds);
-        Assert.assertTrue(resultOpt.isPresent());
+        Assertions.assertTrue(resultOpt.isPresent());
 
         final PriceDto priceDto = resultOpt.get();
-        Assert.assertEquals(new BigDecimal(30).setScale(2, RoundingMode.HALF_UP), priceDto.getValue());
+        Assertions.assertEquals(new BigDecimal(30).setScale(2, RoundingMode.HALF_UP), priceDto.getValue());
     }
 
     @Test
@@ -220,9 +217,9 @@ public class RentCalculatorTest {
         rental.addRentalFilm(newRentalFilm);
 
         final Optional<PriceDto> resultOpt = rentCalculator.calculateCheckOutTotal(rental, filmIds);
-        Assert.assertTrue(resultOpt.isPresent());
+        Assertions.assertTrue(resultOpt.isPresent());
 
         final PriceDto priceDto = resultOpt.get();
-        Assert.assertEquals(new BigDecimal(110).setScale(2, RoundingMode.HALF_UP), priceDto.getValue());
+        Assertions.assertEquals(new BigDecimal(110).setScale(2, RoundingMode.HALF_UP), priceDto.getValue());
     }
 }

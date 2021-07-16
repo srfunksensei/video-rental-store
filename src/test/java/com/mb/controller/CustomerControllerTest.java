@@ -1,20 +1,22 @@
 package com.mb.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.mb.assembler.resource.customer.CustomerResource;
+import com.mb.assembler.resource.customer.CustomerModel;
 import com.mb.assembler.resource.customer.CustomerResourceAssemblerSupport;
 import com.mb.dto.SearchCustomerDto;
 import com.mb.exception.ResourceNotFoundException;
 import com.mb.model.customer.Customer;
 import com.mb.service.customer.CustomerService;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Optional;
@@ -25,6 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ExtendWith(MockitoExtension.class)
 public class CustomerControllerTest extends AbstractMockMvcTest {
 
     @MockBean
@@ -53,14 +56,14 @@ public class CustomerControllerTest extends AbstractMockMvcTest {
     public void findOne() throws Exception {
         final String customerId = "customer-id";
 
-        final CustomerResource customerResource = new CustomerResource();
-        customerResource.setBonusPoints(1L);
-        customerResource.setCustomerId(customerId);
-        customerResource.setFirstName("first-name");
-        customerResource.setLastName("last-name");
-        customerResource.setUsername("username");
+        final CustomerModel customerModel = new CustomerModel();
+        customerModel.setBonusPoints(1L);
+        customerModel.setCustomerId(customerId);
+        customerModel.setFirstName("first-name");
+        customerModel.setLastName("last-name");
+        customerModel.setUsername("username");
 
-        when(customerService.findOne(customerId)).thenReturn(Optional.of(customerResource));
+        when(customerService.findOne(customerId)).thenReturn(Optional.of(customerModel));
 
         final MvcResult mvcResult = mvc.perform(
                 get("/customers/{id}", customerId))
@@ -68,10 +71,10 @@ public class CustomerControllerTest extends AbstractMockMvcTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        final CustomerResource result = parseResponse(mvcResult, new TypeReference<CustomerResource>() {
+        final CustomerModel result = parseResponse(mvcResult, new TypeReference<CustomerModel>() {
         });
-        Assert.assertNotNull(result);
-        Assert.assertEquals(customerResource, result);
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(customerModel, result);
     }
 
     @Test
@@ -106,7 +109,7 @@ public class CustomerControllerTest extends AbstractMockMvcTest {
                 .build();
 
         final Page<Customer> customers = Page.empty();
-        final PagedResources<CustomerResource> customerResources = pagedAssembler.toResource(customers, customerResourceAssembler);
+        final PagedModel<CustomerModel> customerResources = pagedAssembler.toModel(customers, customerResourceAssembler);
         when(customerService.findAll(eq(searchCustomerDto), any(Pageable.class))).thenReturn(customerResources);
 
         final MvcResult mvcResult = mvc.perform(
@@ -116,9 +119,9 @@ public class CustomerControllerTest extends AbstractMockMvcTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        final PagedResources<CustomerResource> result = parseResponse(mvcResult, new TypeReference<PagedResources<CustomerResource>>() {
+        final PagedModel<CustomerModel> result = parseResponse(mvcResult, new TypeReference<PagedModel<CustomerModel>>() {
         });
 
-        Assert.assertEquals(0, result.getContent().size());
+        Assertions.assertEquals(0, result.getContent().size());
     }
 }

@@ -1,11 +1,11 @@
 package com.mb.controller;
 
-import com.mb.assembler.resource.customer.CustomerResource;
+import com.mb.assembler.resource.customer.CustomerModel;
 import com.mb.dto.SearchCustomerDto;
 import com.mb.service.customer.CustomerService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class CustomerController {
 	private final CustomerService customerService;
 
 	@GetMapping(value = "/{customerId}")
-	public ResponseEntity<CustomerResource> findOne(@PathVariable final String customerId) {
+	public ResponseEntity<CustomerModel> findOne(@PathVariable final String customerId) {
 		return customerService.findOne(customerId) //
 				.map(ResponseEntity::ok) //
 				.orElse(ResponseEntity.notFound().build());
@@ -32,11 +32,11 @@ public class CustomerController {
 	}
 	
 	@GetMapping
-	public HttpEntity<PagedResources<CustomerResource>> findAll(@RequestParam(value = "firstName", required = false) final String firstName,
-																@RequestParam(name = "lastName", required = false) final String lastName,
-																@RequestParam(name = "username", required = false) final String username,
-																@RequestParam(name = "bonusPoints", required = false) final Long bonusPoints,
-																final Pageable pageable) {
+	public HttpEntity<PagedModel<CustomerModel>> findAll(@RequestParam(value = "firstName", required = false) final String firstName,
+														 @RequestParam(name = "lastName", required = false) final String lastName,
+														 @RequestParam(name = "username", required = false) final String username,
+														 @RequestParam(name = "bonusPoints", required = false) final Long bonusPoints,
+														 final Pageable pageable) {
 		final SearchCustomerDto searchCustomerDto = SearchCustomerDto.builder()
 				.firstName(firstName)
 				.lastName(lastName)

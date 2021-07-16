@@ -4,13 +4,13 @@ import com.mb.dto.PriceDto;
 import com.mb.exception.InvalidDataException;
 import com.mb.model.price.BasicPrice;
 import com.mb.repository.price.BasicPriceRepository;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -18,8 +18,8 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class RegularFilmPriceCalculatorTest {
 
     @MockBean
@@ -28,9 +28,9 @@ public class RegularFilmPriceCalculatorTest {
     @Autowired
     public RegularFilmPriceCalculator regularFilmPriceCalculator;
 
-    @Test(expected = InvalidDataException.class)
+    @Test
     public void calculatePrice_negativeDays() {
-        regularFilmPriceCalculator.calculatePrice(-1L);
+        Assertions.assertThrows(InvalidDataException.class, () -> regularFilmPriceCalculator.calculatePrice(-1L));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class RegularFilmPriceCalculatorTest {
         final long numOfDays = RegularFilmPriceCalculator.NUM_OF_FIRST_DAYS_WITH_SAME_PRICE - 2;
         final PriceDto priceDto = regularFilmPriceCalculator.calculatePrice(numOfDays);
 
-        Assert.assertEquals(price.getValue(), priceDto.getValue());
+        Assertions.assertEquals(price.getValue(), priceDto.getValue());
     }
 
     @Test
@@ -61,6 +61,6 @@ public class RegularFilmPriceCalculatorTest {
         final PriceDto priceDto = regularFilmPriceCalculator.calculatePrice(numOfDays);
 
         final long diff = numOfDays - RegularFilmPriceCalculator.NUM_OF_FIRST_DAYS_WITH_SAME_PRICE;
-        Assert.assertEquals(price.getValue().add(price.getValue().multiply(new BigDecimal(diff))), priceDto.getValue());
+        Assertions.assertEquals(price.getValue().add(price.getValue().multiply(new BigDecimal(diff))), priceDto.getValue());
     }
 }
