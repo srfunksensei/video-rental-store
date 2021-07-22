@@ -3,8 +3,10 @@ package com.mb.service.rent;
 import com.mb.assembler.resource.rent.RentModel;
 import com.mb.dto.CheckInItemDto;
 import com.mb.dto.PriceDto;
+import com.mb.model.customer.Customer;
 import com.mb.model.film.Film;
 import com.mb.model.film.FilmType;
+import com.mb.model.price.RentalPrice;
 import com.mb.model.rental.Rental;
 import com.mb.model.rental.RentalFilm;
 import com.mb.model.rental.RentalStatus;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -25,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class RentCalculatorTest {
 
     @Autowired
@@ -163,7 +167,8 @@ public class RentCalculatorTest {
 
         final Set<String> filmIds = Stream.of(regularFilm.getId(), newFilm.getId()).collect(Collectors.toSet());
 
-        final Rental rental = new Rental();
+        final RentalPrice actualPrice = new RentalPrice("SEK", BigDecimal.TEN);
+        final Rental rental = new Rental(actualPrice, new Customer());
 
         final RentalFilm regularRentalFilm = new RentalFilm();
         regularRentalFilm.setFilm(regularFilm);
