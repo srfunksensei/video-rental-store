@@ -1,13 +1,14 @@
 ## Video Rental Store
 
-Implementation of a system which provides following operations available:
-* get inventory of films
-* calculate the price for rentals
-* renting one or several films
-* returning films and calculating surcharges
-* keep track of customer bonus bonus
+Video rental store is a software system for managing the rental administration. The system has these primary features:
 
-The system is build using Spring Boot and Java 1.8. The following modules are included to build the app:
+1. Have an inventory of films
+2. Calculate the price for rentals
+3. Keep track of the customers “bonus” points
+4. Renting one or several films and calculating the price
+5. Returning films and calculating possible surcharges
+
+The system is built using Spring Boot and Java 1.8. The following modules are included to build the app:
 * Web
 * JPA
 * H2
@@ -15,7 +16,26 @@ The system is build using Spring Boot and Java 1.8. The following modules are in
 
 The focus for this assignment is clean, extensible, robust and modular architecture. Besides this the system was implemented to use as much as possible design patterns. 
 
-As this is simple demo use-case system, no test are written, nor data validation or error handling is performed.  
+As this is simple demo use-case system, no special data validation or error handling is performed.
+
+## Requirements
+
+#### Price 
+
+The price of rentals is based on the type of film rented and how many days the film is rented for. The customers say when renting for how many days they want to rent for and pay up front. If the film is returned late, then rent for the extra days is charged when returning.
+
+The store has three types of films.
+1. New releases – Price is <premium price> times number of days rented.
+2. Regular films – Price is <basic price> for the first 3 days and then <basic price> times the number of days over 3.
+3. Old film - Price is <basic price> for the first 5 days and then <basic price> times the number of days over 5
+
+`premium price` is 40 SEK
+
+`basic price` is 30 SEK
+
+#### Bonus points
+
+Customers get bonus points when renting films. A new release gives 2 points and other films give one point per rental (regardless of the time rented).
 
 ## Structure overview
 
@@ -60,7 +80,7 @@ As rental can have many films, and each film can be rented for any number of day
 
 #### Customer
 
-`Customer` consists of simple properties which define a customer abstraction. Each customer can have many rentals. Customer object itself contains number of bonus point which are accumulated every time when the rent is checked in. This way we keep the track of bonus points and providing the ability to independently update bonus point without loosing information.
+`Customer` consists of simple properties which define a customer abstraction. Each customer can have many rentals. Customer object itself contains number of bonus point which are accumulated every time when the rent is checked in. This way we keep the track of bonus points and provide the ability to independently update bonus point without loosing information.
 
 ### Data manipulation
 
@@ -123,5 +143,19 @@ or alternatively using your installed maven version
 ```bash
 mvn clean spring-boot:run
 ```
+### Dockerizing app
 
-To see the application in action you can use `curl` or `postman` collection provided.
+```bash
+$ mvn clean package
+$ docker build -t video-rental-store:latest .
+```
+
+running docker image
+
+```bash
+$ docker run -it -p 8080:8080 video-rental-store
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
